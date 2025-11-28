@@ -1,109 +1,124 @@
-import PlaceCard from '../../components/place-card/place-card';
+import { useState } from 'react';
+import Header from '../../components/header/header';
+import LocationsList from '../../components/locations-list/locations-list';
+import PlacesList from '../../components/places-list/places-list';
+import Map from '../../components/map/map';
+import { City, Offer } from '../../types/offer';
 
 type MainPageProps = {
   offersCount: number;
 }
 
+const CITIES: City[] = [
+  { name: 'Paris' },
+  { name: 'Cologne' },
+  { name: 'Brussels' },
+  { name: 'Amsterdam', isActive: true },
+  { name: 'Hamburg' },
+  { name: 'Dusseldorf' },
+];
+
+const MOCK_OFFERS: Offer[] = [
+  {
+    id: '1',
+    title: 'Beautiful & luxurious apartment at great location',
+    type: 'Apartment',
+    price: 120,
+    previewImage: 'img/apartment-01.jpg',
+    rating: 4.0,
+    isFavorite: false,
+    location: {
+      latitude: 52.37454,
+      longitude: 4.897976,
+      zoom: 10,
+    },
+  },
+  {
+    id: '2',
+    title: 'Wood and stone place',
+    type: 'Room',
+    price: 80,
+    previewImage: 'img/apartment-02.jpg',
+    rating: 4.5,
+    isFavorite: true,
+    location: {
+      latitude: 52.35054,
+      longitude: 4.908976,
+      zoom: 10,
+    },
+  },
+  {
+    id: '3',
+    title: 'Canal View Prinsengracht',
+    type: 'Apartment',
+    price: 132,
+    previewImage: 'img/apartment-03.jpg',
+    rating: 4.8,
+    isFavorite: false,
+    location: {
+      latitude: 52.39054,
+      longitude: 4.853096,
+      zoom: 10,
+    },
+  },
+  {
+    id: '4',
+    title: 'Nice, cozy, warm big bed apartment',
+    type: 'Apartment',
+    price: 180,
+    previewImage: 'img/apartment-small-03.jpg',
+    rating: 4.2,
+    isFavorite: true,
+    location: {
+      latitude: 52.38054,
+      longitude: 4.939309,
+      zoom: 10,
+    },
+  },
+  {
+    id: '5',
+    title: 'Wood and stone place',
+    type: 'Room',
+    price: 80,
+    previewImage: 'img/apartment-small-04.jpg',
+    rating: 4.0,
+    isFavorite: false,
+    location: {
+      latitude: 52.36054,
+      longitude: 4.853096,
+      zoom: 10,
+    },
+  },
+];
+
 function MainPage({offersCount}: MainPageProps): JSX.Element {
+  const activeCity = CITIES.find((city) => city.isActive)?.name || 'Amsterdam';
+  const [selectedOfferId, setSelectedOfferId] = useState<string | undefined>();
+
   return (
     <div className="page page--gray page--main">
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <a className="header__logo-link header__logo-link--active">
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </a>
-            </div>
-            <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <a className="header__nav-link header__nav-link--profile" href="#">
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                    <span className="header__favorite-count">3</span>
-                  </a>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header
+        user={{
+          email: 'Oliver.conner@gmail.com',
+          favoriteCount: 3,
+        }}
+      />
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
-        <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
-          </section>
-        </div>
+        <LocationsList cities={CITIES} activeCity={activeCity} />
         <div className="cities">
           <div className="cities__places-container container">
-            <section className="cities__places places">
-              <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offersCount} places to stay in Amsterdam</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0}>
-                  Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-                <ul className="places__options places__options--custom places__options--opened">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
-                </ul>
-              </form>
-              <div className="cities__places-list places__list tabs__content">
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-              </div>
-            </section>
+            <PlacesList
+              offers={MOCK_OFFERS}
+              offersCount={offersCount}
+              cityName={activeCity}
+              currentSort="Popular"
+              isSortOpen
+              onCardHover={setSelectedOfferId}
+            />
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <Map offers={MOCK_OFFERS} selectedOfferId={selectedOfferId} className="cities__map" />
             </div>
           </div>
         </div>
