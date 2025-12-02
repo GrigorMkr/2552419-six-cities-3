@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import Header from '../../components/header/header';
 import OfferGallery from '../../components/offer-gallery/offer-gallery';
 import PremiumMark from '../../components/premium-mark/premium-mark';
@@ -93,6 +94,8 @@ const NEARBY_OFFERS: Offer[] = [
 ];
 
 function OfferPage(): JSX.Element {
+  useParams();
+
   return (
     <div className="page">
       <Header
