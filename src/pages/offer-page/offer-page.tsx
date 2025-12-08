@@ -9,9 +9,11 @@ import Price from '../../components/price/price';
 import OfferInside from '../../components/offer-inside/offer-inside';
 import OfferHost from '../../components/offer-host/offer-host';
 import Reviews from '../../components/reviews/reviews';
+import ReviewForm from '../../components/review-form/review-form';
 import Map from '../../components/map/map';
 import PlaceCard from '../../components/place-card/place-card';
 import { Offer } from '../../types/offer';
+import { MOCK_REVIEWS } from '../../mocks/reviews';
 
 const GALLERY_IMAGES = [
   'img/room.jpg',
@@ -35,66 +37,28 @@ const INSIDE_ITEMS = [
   'Fridge',
 ];
 
-const REVIEWS_DATA = [
-  {
-    id: '1',
-    user: {
-      name: 'Max',
-      avatarUrl: 'img/avatar-max.jpg',
-    },
-    rating: 4.0,
-    comment: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-    date: '2019-04-24',
-  },
-];
+type OfferPageProps = {
+  offers: Offer[];
+}
 
-const NEARBY_OFFERS: Offer[] = [
-  {
-    id: '1',
-    title: 'Wood and stone place',
-    type: 'Room',
-    price: 80,
-    previewImage: 'img/room.jpg',
-    rating: 4.0,
-    isFavorite: true,
-    location: {
-      latitude: 52.37454,
-      longitude: 4.897976,
-      zoom: 10,
-    },
-  },
-  {
-    id: '2',
-    title: 'Canal View Prinsengracht',
-    type: 'Apartment',
-    price: 132,
-    previewImage: 'img/apartment-02.jpg',
-    rating: 4.0,
-    isFavorite: false,
-    location: {
-      latitude: 52.35054,
-      longitude: 4.908976,
-      zoom: 10,
-    },
-  },
-  {
-    id: '3',
-    title: 'Nice, cozy, warm big bed apartment',
-    type: 'Apartment',
-    price: 180,
-    previewImage: 'img/apartment-03.jpg',
-    rating: 5.0,
-    isFavorite: false,
-    location: {
-      latitude: 52.39054,
-      longitude: 4.853096,
-      zoom: 10,
-    },
-  },
-];
+function OfferPage({offers}: OfferPageProps): JSX.Element {
+  const { id } = useParams();
+  const currentOffer = offers.find((offer) => offer.id === id);
+  const nearbyOffers = offers.filter((offer) => offer.id !== id).slice(0, 3);
+  const mapOffers = currentOffer ? [currentOffer, ...nearbyOffers] : nearbyOffers;
 
-function OfferPage(): JSX.Element {
-  useParams();
+  if (!currentOffer) {
+    return (
+      <div className="page">
+        <Header />
+        <main className="page__main">
+          <div className="container">
+            <p>Offer not found</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="page">
@@ -113,13 +77,13 @@ function OfferPage(): JSX.Element {
               <PremiumMark variant="offer" />
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">
-                  Beautiful &amp; luxurious studio at great location
+                  {currentOffer.title}
                 </h1>
-                <BookmarkButton size="large" />
+                <BookmarkButton size="large" isActive={currentOffer.isFavorite} />
               </div>
-              <Rating rating={4.8} className="offer__rating" showValue />
-              <OfferFeatures type="Apartment" bedrooms={3} maxAdults={4} />
-              <Price value={120} variant="offer" />
+              <Rating rating={currentOffer.rating} className="offer__rating" showValue />
+              <OfferFeatures type={currentOffer.type} bedrooms={3} maxAdults={4} />
+              <Price value={currentOffer.price} variant="offer" />
               <OfferInside items={INSIDE_ITEMS} />
               <OfferHost
                 name="Angelina"
@@ -130,16 +94,17 @@ function OfferPage(): JSX.Element {
                   'An independent House, strategically located between Rembrand Square and National Opera, but where the bustle of the city comes to rest in this alley flowery and colorful.',
                 ]}
               />
-              <Reviews reviews={REVIEWS_DATA} showForm />
+              <Reviews reviews={MOCK_REVIEWS} />
+              <ReviewForm />
             </div>
           </div>
-          <Map offers={NEARBY_OFFERS} className="offer__map" />
+          <Map offers={mapOffers} selectedOfferId={currentOffer?.id} className="offer__map" />
         </section>
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <div className="near-places__list places__list">
-              {NEARBY_OFFERS.map((offer, index) => (
+              {nearbyOffers.map((offer, index) => (
                 <PlaceCard
                   key={offer.id}
                   offer={offer}
