@@ -3,54 +3,14 @@ import Footer from '../../components/footer/footer';
 import PlaceCard from '../../components/place-card/place-card';
 import { Offer } from '../../types/offer';
 
-const FAVORITES_OFFERS: Offer[] = [
-  {
-    id: '1',
-    title: 'Nice, cozy, warm big bed apartment',
-    type: 'Apartment',
-    price: 180,
-    previewImage: 'img/apartment-small-03.jpg',
-    rating: 5.0,
-    isFavorite: true,
-    location: {
-      latitude: 52.37454,
-      longitude: 4.897976,
-      zoom: 10,
-    },
-  },
-  {
-    id: '2',
-    title: 'Wood and stone place',
-    type: 'Room',
-    price: 80,
-    previewImage: 'img/room-small.jpg',
-    rating: 4.0,
-    isFavorite: true,
-    location: {
-      latitude: 52.35054,
-      longitude: 4.908976,
-      zoom: 10,
-    },
-  },
-  {
-    id: '3',
-    title: 'White castle',
-    type: 'Apartment',
-    price: 180,
-    previewImage: 'img/apartment-small-04.jpg',
-    rating: 5.0,
-    isFavorite: true,
-    location: {
-      latitude: 52.39054,
-      longitude: 4.853096,
-      zoom: 10,
-    },
-  },
-];
+type FavoritesPageProps = {
+  offers: Offer[];
+}
 
-function FavoritesPage(): JSX.Element {
-  const amsterdamOffers = FAVORITES_OFFERS.slice(0, 2);
-  const cologneOffers = FAVORITES_OFFERS.slice(2);
+function FavoritesPage({offers}: FavoritesPageProps): JSX.Element {
+  const favoriteOffers = offers.filter((offer) => offer.isFavorite);
+  const amsterdamOffers = favoriteOffers.slice(0, 2);
+  const cologneOffers = favoriteOffers.slice(2);
 
   return (
     <div className="page">

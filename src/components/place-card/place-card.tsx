@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Offer } from '../../types/offer';
 import Rating from '../rating/rating';
 import BookmarkButton from '../bookmark-button/bookmark-button';
@@ -33,7 +34,7 @@ function PlaceCard({offer, onCardHover, variant = 'cities', isPremium = false}: 
     >
       {isPremium && <PremiumMark />}
       <div className={`${imageWrapperClass} place-card__image-wrapper`}>
-        <a href="#">
+        <Link to={`/offer/${offer.id}`}>
           <img
             className="place-card__image"
             src={offer.previewImage}
@@ -41,7 +42,7 @@ function PlaceCard({offer, onCardHover, variant = 'cities', isPremium = false}: 
             height={imageHeight}
             alt="Place image"
           />
-        </a>
+        </Link>
       </div>
       <div className={`${variant === 'favorites' ? 'favorites__card-info' : ''} place-card__info`}>
         <div className="place-card__price-wrapper">
@@ -50,7 +51,7 @@ function PlaceCard({offer, onCardHover, variant = 'cities', isPremium = false}: 
         </div>
         <Rating rating={offer.rating} className="place-card__rating" />
         <h2 className="place-card__name">
-          <a href="#">{offer.title}</a>
+          <Link to={`/offer/${offer.id}`}>{offer.title}</Link>
         </h2>
         <p className="place-card__type">{offer.type}</p>
       </div>
