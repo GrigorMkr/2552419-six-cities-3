@@ -10,8 +10,8 @@ export const MOCK_OFFERS: Offer[] = [
     rating: 4.0,
     isFavorite: false,
     location: {
-      latitude: 52.37454,
-      longitude: 4.897976,
+      latitude: 52.3909553943508,
+      longitude: 4.85309666406198,
       zoom: 10,
     },
   },
@@ -24,8 +24,8 @@ export const MOCK_OFFERS: Offer[] = [
     rating: 4.5,
     isFavorite: true,
     location: {
-      latitude: 52.35054,
-      longitude: 4.908976,
+      latitude: 52.3609553943508,
+      longitude: 4.85309666406198,
       zoom: 10,
     },
   },
@@ -38,8 +38,8 @@ export const MOCK_OFFERS: Offer[] = [
     rating: 4.8,
     isFavorite: false,
     location: {
-      latitude: 52.39054,
-      longitude: 4.853096,
+      latitude: 52.3909553943508,
+      longitude: 4.929309666406198,
       zoom: 10,
     },
   },
@@ -52,8 +52,8 @@ export const MOCK_OFFERS: Offer[] = [
     rating: 4.2,
     isFavorite: true,
     location: {
-      latitude: 52.38054,
-      longitude: 4.939309,
+      latitude: 52.3809553943508,
+      longitude: 4.939309666406198,
       zoom: 10,
     },
   },
