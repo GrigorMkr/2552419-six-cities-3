@@ -11,9 +11,7 @@ const MainPage: FC = () => {
   const city = useSelector((state: RootState) => state.data.city);
   const allOffers = useSelector((state: RootState) => state.data.offers);
 
-  const filteredOffers = useMemo(() => {
-    return allOffers.filter((offer) => offer.city.name === city);
-  }, [allOffers, city]);
+  const filteredOffers = useMemo(() => allOffers.filter((offer) => offer.city.name === city), [allOffers, city]);
 
   const citiesWithActive = useMemo(() => CITIES.map((cityItem) => ({
     ...cityItem,
