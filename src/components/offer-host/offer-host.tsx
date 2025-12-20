@@ -1,5 +1,8 @@
 import { FC } from 'react';
-import { HOST_AVATAR_SIZE } from '../../constants';
+
+const HOST_AVATAR = {
+  SIZE: 74,
+} as const;
 
 type OfferHostProps = {
   name: string;
@@ -16,7 +19,7 @@ const OfferHost: FC<OfferHostProps> = ({name, avatarUrl, isPro = false, descript
       <h2 className="offer__host-title">Meet the host</h2>
       <div className="offer__host-user user">
         <div className={`offer__avatar-wrapper user__avatar-wrapper ${proClass}`}>
-          <img className="offer__avatar user__avatar" src={avatarUrl} width={HOST_AVATAR_SIZE} height={HOST_AVATAR_SIZE} alt="Host avatar" />
+          <img className="offer__avatar user__avatar" src={avatarUrl} width={HOST_AVATAR.SIZE} height={HOST_AVATAR.SIZE} alt="Host avatar" />
         </div>
         <span className="offer__user-name">
           {name}

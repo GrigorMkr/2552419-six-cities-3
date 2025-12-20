@@ -1,6 +1,6 @@
-import type { Offer } from '../types/offer';
+import type { Offer, City } from '../types/offer';
 
-const changeCity = (city: string) => ({
+const changeCity = (city: City) => ({
   type: 'city/changeCity' as const,
   payload: city,
 });

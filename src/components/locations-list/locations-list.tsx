@@ -5,32 +5,54 @@ import { changeCity } from '../../store/action';
 
 type LocationsListProps = {
   cities: City[];
-  activeCity?: string;
+  activeCity?: City;
 }
+
+type LocationsItemProps = {
+  city: City;
+  activeCity?: City;
+  onCityClick: (city: City, evt: React.MouseEvent<HTMLAnchorElement>) => void;
+}
+
+const ListItem: FC<LocationsItemProps> = ({city, activeCity, onCityClick}) => {
+  const className = `locations__item-link tabs__item ${city.isActive || activeCity?.name === city.name ? 'tabs__item--active' : ''}`;
+
+  const handleClick = useCallback((evt: React.MouseEvent<HTMLAnchorElement>) => {
+    onCityClick(city, evt);
+  }, [onCityClick, city]);
+
+  return (
+    <li className="locations__item">
+      <a
+        className={className}
+        href="#"
+        onClick={handleClick}
+      >
+        <span>{city.name}</span>
+      </a>
+    </li>
+  );
+};
 
 const LocationsList: FC<LocationsListProps> = ({cities, activeCity}) => {
   const dispatch = useDispatch();
 
-  const handleCityClick = useCallback((cityName: string, evt: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleCityClick = useCallback((city: City, evt: React.MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
-    dispatch(changeCity(cityName));
+    dispatch(changeCity(city));
   }, [dispatch]);
 
   return (
     <div className="tabs">
       <section className="locations container">
         <ul className="locations__list tabs__list">
-          {cities.map((city, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <li key={index} className="locations__item">
-              <a
-                className={`locations__item-link tabs__item ${city.isActive || activeCity === city.name ? 'tabs__item--active' : ''}`}
-                href="#"
-                onClick={(evt) => handleCityClick(city.name, evt)}
-              >
-                <span>{city.name}</span>
-              </a>
-            </li>
+          {cities.map((city) => (
+            <ListItem
+              key={city.name}
+              city={city}
+              activeCity={activeCity}
+              onCityClick={handleCityClick}
+            />
           ))}
         </ul>
       </section>

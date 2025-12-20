@@ -1,27 +1,40 @@
 import { FC, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 import MainPage from '../pages/main-page/main-page';
 import LoginPage from '../pages/login-page/login-page';
 import FavoritesPage from '../pages/favorites-page/favorites-page';
 import OfferPage from '../pages/offer-page/offer-page';
 import NotFoundPage from '../pages/not-found-page/not-found-page';
 import PrivateRoute from '../components/private-route/private-route';
-import { Offer } from '../types/offer';
 import { AppRoute } from '../constants';
 import { loadOffers } from '../store/action';
+import { MOCK_OFFERS } from '../mocks/offers';
+import type { Offer } from '../types/offer';
 
-type AppProps = {
+type ApiResponse = {
   offers: Offer[];
 }
 
-const App: FC<AppProps> = ({offers}) => {
+const App: FC = () => {
   const dispatch = useDispatch();
   const isAuthorized = false;
 
   useEffect(() => {
-    dispatch(loadOffers(offers));
-  }, [dispatch, offers]);
+    const fetchOffers = async () => {
+      try {
+        const response = await axios.get<string>('/api/offers');
+        const parsedData = JSON.parse(response.data) as ApiResponse | Offer[];
+        const offers = Array.isArray(parsedData) ? parsedData : parsedData.offers;
+        dispatch(loadOffers(offers));
+      } catch {
+        dispatch(loadOffers(MOCK_OFFERS));
+      }
+    };
+
+    fetchOffers();
+  }, [dispatch]);
 
   return (
     <BrowserRouter>
@@ -32,11 +45,11 @@ const App: FC<AppProps> = ({offers}) => {
           path={AppRoute.Favorites}
           element={
             <PrivateRoute isAuthorized={isAuthorized}>
-              <FavoritesPage offers={offers} />
+              <FavoritesPage />
             </PrivateRoute>
           }
         />
-        <Route path={AppRoute.Offer} element={<OfferPage offers={offers} />} />
+        <Route path={AppRoute.Offer} element={<OfferPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

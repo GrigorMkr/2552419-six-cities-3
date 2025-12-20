@@ -1,18 +1,18 @@
-import type { Offer } from '../types/offer';
+import type { Offer, City } from '../types/offer';
 import type { AnyAction } from '@reduxjs/toolkit';
 
 export type State = {
-  city: string;
+  city: City;
   offers: Offer[];
 }
 
 const initialState: State = {
-  city: 'Paris',
+  city: { name: 'Paris' },
   offers: [],
 };
 
 type Action =
-  | { type: 'city/changeCity'; payload: string }
+  | { type: 'city/changeCity'; payload: City }
   | { type: 'offers/loadOffers'; payload: Offer[] };
 
 const reducer = (state: State = initialState, action: Action | AnyAction): State => {
@@ -20,7 +20,7 @@ const reducer = (state: State = initialState, action: Action | AnyAction): State
     case 'city/changeCity':
       return {
         ...state,
-        city: (action as { type: 'city/changeCity'; payload: string }).payload,
+        city: (action as { type: 'city/changeCity'; payload: City }).payload,
       };
     case 'offers/loadOffers':
       return {

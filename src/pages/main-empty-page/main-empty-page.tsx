@@ -1,22 +1,22 @@
 import { FC, useMemo } from 'react';
 import Header from '../../components/header/header';
 import LocationsList from '../../components/locations-list/locations-list';
-import { DEFAULT_FAVORITE_COUNT, CITIES, EMPTY_PAGE_ACTIVE_CITY_NAME } from '../../constants';
+import { FAVORITE_COUNT, CITIES, CITY_NAME, MOCK_EMAIL } from '../../constants';
 
 const MainEmptyPage: FC = () => {
   const citiesWithActive = useMemo(() => CITIES.map((city) => ({
     ...city,
-    isActive: city.name === EMPTY_PAGE_ACTIVE_CITY_NAME,
+    isActive: city.name === CITY_NAME.EMPTY_PAGE_ACTIVE,
   })), []);
 
-  const activeCity = EMPTY_PAGE_ACTIVE_CITY_NAME;
+  const activeCity = CITY_NAME.EMPTY_PAGE_ACTIVE;
 
   return (
     <div className="page page--gray page--main">
       <Header
         user={{
-          email: 'Oliver.conner@gmail.com',
-          favoriteCount: DEFAULT_FAVORITE_COUNT,
+          email: MOCK_EMAIL,
+          favoriteCount: FAVORITE_COUNT.DEFAULT,
         }}
       />
 
