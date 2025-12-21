@@ -1,14 +1,14 @@
 import { FC } from 'react';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
-import { EMPTY_FAVORITE_COUNT } from '../../constants';
+import { FAVORITE_COUNT, MOCK_EMAIL } from '../../constants';
 
 const FavoritesEmptyPage: FC = () => (
   <div className="page page--favorites-empty">
     <Header
       user={{
-        email: 'Oliver.conner@gmail.com',
-        favoriteCount: EMPTY_FAVORITE_COUNT,
+        email: MOCK_EMAIL,
+        favoriteCount: FAVORITE_COUNT.EMPTY,
       }}
     />
 

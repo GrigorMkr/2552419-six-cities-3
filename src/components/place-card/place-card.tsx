@@ -6,16 +6,28 @@ import Rating from '../rating/rating';
 import BookmarkButton from '../bookmark-button/bookmark-button';
 import Price from '../price/price';
 import PremiumMark from '../premium-mark/premium-mark';
-import { FAVORITES_IMAGE_WIDTH, DEFAULT_IMAGE_WIDTH, FAVORITES_IMAGE_HEIGHT, DEFAULT_IMAGE_HEIGHT, getOfferUrl } from '../../constants';
+import { getOfferUrl } from '../../constants';
+
+const PLACE_CARD_IMAGE = {
+  FAVORITES: {
+    WIDTH: 150,
+    HEIGHT: 110,
+  },
+  DEFAULT: {
+    WIDTH: 260,
+    HEIGHT: 200,
+  },
+} as const;
 
 type PlaceCardProps = {
   offer: Offer;
   onCardHover?: (offerId: string) => void;
+  onCardLeave?: () => void;
   variant?: PlaceCardVariant;
   isPremium?: boolean;
 }
 
-const PlaceCard: FC<PlaceCardProps> = ({offer, onCardHover, variant = PlaceCardVariant.Cities, isPremium = false}) => {
+const PlaceCard: FC<PlaceCardProps> = ({offer, onCardHover, onCardLeave, variant = PlaceCardVariant.Cities, isPremium = false}) => {
   let imageWrapperClass = 'cities__image-wrapper';
   let cardClass = 'cities__card';
 
@@ -27,22 +39,28 @@ const PlaceCard: FC<PlaceCardProps> = ({offer, onCardHover, variant = PlaceCardV
     cardClass = 'favorites__card';
   }
 
-  const imageWidth = variant === PlaceCardVariant.Favorites ? FAVORITES_IMAGE_WIDTH : DEFAULT_IMAGE_WIDTH;
-  const imageHeight = variant === PlaceCardVariant.Favorites ? FAVORITES_IMAGE_HEIGHT : DEFAULT_IMAGE_HEIGHT;
+  const imageWidth = variant === PlaceCardVariant.Favorites ? PLACE_CARD_IMAGE.FAVORITES.WIDTH : PLACE_CARD_IMAGE.DEFAULT.WIDTH;
+  const imageHeight = variant === PlaceCardVariant.Favorites ? PLACE_CARD_IMAGE.FAVORITES.HEIGHT : PLACE_CARD_IMAGE.DEFAULT.HEIGHT;
   const cardInfoClass = variant === PlaceCardVariant.Favorites ? 'favorites__card-info' : '';
+  const offerUrl = getOfferUrl(offer.id);
 
   const handleMouseEnter = useCallback(() => {
     onCardHover?.(offer.id);
   }, [onCardHover, offer.id]);
 
+  const handleMouseLeave = useCallback(() => {
+    onCardLeave?.();
+  }, [onCardLeave]);
+
   return (
     <article
       className={`${cardClass} place-card`}
       onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {isPremium && <PremiumMark />}
       <div className={`${imageWrapperClass} place-card__image-wrapper`}>
-        <Link to={getOfferUrl(offer.id)}>
+        <Link to={offerUrl}>
           <img
             className="place-card__image"
             src={offer.previewImage}
@@ -59,7 +77,7 @@ const PlaceCard: FC<PlaceCardProps> = ({offer, onCardHover, variant = PlaceCardV
         </div>
         <Rating rating={offer.rating} className="place-card__rating" />
         <h2 className="place-card__name">
-          <Link to={getOfferUrl(offer.id)}>{offer.title}</Link>
+          <Link to={offerUrl}>{offer.title}</Link>
         </h2>
         <p className="place-card__type">{offer.type}</p>
       </div>

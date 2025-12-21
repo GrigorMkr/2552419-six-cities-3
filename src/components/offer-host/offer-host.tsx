@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { HOST_AVATAR_SIZE } from '../../constants';
+
+const HOST_AVATAR_SIZE = 74;
 
 type OfferHostProps = {
   name: string;

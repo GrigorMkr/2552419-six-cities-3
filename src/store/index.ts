@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import reducer from './reducer';
-import type { State } from './reducer';
+import dataReducer from './data-slice';
+import type { DataState } from './data-slice';
 
 const store = configureStore({
   reducer: {
-    data: reducer,
+    data: dataReducer,
   },
 });
 
@@ -12,5 +12,6 @@ type RootState = ReturnType<typeof store.getState>;
 type AppDispatch = typeof store.dispatch;
 
 export { store };
-export type { RootState, AppDispatch, State };
+export type { RootState, AppDispatch };
+export type { DataState as State };
 

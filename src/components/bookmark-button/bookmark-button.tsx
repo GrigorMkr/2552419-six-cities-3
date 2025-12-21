@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { LARGE_ICON_WIDTH, SMALL_ICON_WIDTH, LARGE_ICON_HEIGHT, SMALL_ICON_HEIGHT } from '../../constants';
 
 type BookmarkButtonProps = {
   isActive?: boolean;
@@ -8,9 +7,20 @@ type BookmarkButtonProps = {
   onClick?: () => void;
 }
 
+const BOOKMARK_ICON = {
+  LARGE: {
+    WIDTH: 31,
+    HEIGHT: 33,
+  },
+  SMALL: {
+    WIDTH: 18,
+    HEIGHT: 19,
+  },
+} as const;
+
 const BookmarkButton: FC<BookmarkButtonProps> = ({isActive = false, className = '', size = 'small', onClick}) => {
-  const iconWidth = size === 'large' ? LARGE_ICON_WIDTH : SMALL_ICON_WIDTH;
-  const iconHeight = size === 'large' ? LARGE_ICON_HEIGHT : SMALL_ICON_HEIGHT;
+  const iconWidth = size === 'large' ? BOOKMARK_ICON.LARGE.WIDTH : BOOKMARK_ICON.SMALL.WIDTH;
+  const iconHeight = size === 'large' ? BOOKMARK_ICON.LARGE.HEIGHT : BOOKMARK_ICON.SMALL.HEIGHT;
   const buttonClass = size === 'large' ? 'offer__bookmark-button' : 'place-card__bookmark-button';
   const iconClass = size === 'large' ? 'offer__bookmark-icon' : 'place-card__bookmark-icon';
   const activeClass = isActive ? `${buttonClass}--active` : '';

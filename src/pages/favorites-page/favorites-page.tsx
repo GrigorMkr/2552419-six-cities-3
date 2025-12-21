@@ -1,26 +1,23 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import PlaceCard from '../../components/place-card/place-card';
 import { PlaceCardVariant } from '../../types/place-card-variant';
-import { Offer } from '../../types/offer';
-import { AMSTERDAM_OFFERS_COUNT, DEFAULT_FAVORITE_COUNT, FIRST_OFFER_INDEX } from '../../constants';
+import { OFFER, FAVORITE_COUNT, MOCK_EMAIL } from '../../constants';
+import { selectFavoriteOffers } from '../../store/data-slice';
 
-type FavoritesPageProps = {
-  offers: Offer[];
-}
-
-const FavoritesPage: FC<FavoritesPageProps> = ({offers}) => {
-  const favoriteOffers = offers.filter((offer) => offer.isFavorite);
-  const amsterdamOffers = favoriteOffers.slice(0, AMSTERDAM_OFFERS_COUNT);
-  const cologneOffers = favoriteOffers.slice(AMSTERDAM_OFFERS_COUNT);
+const FavoritesPage: FC = () => {
+  const favoriteOffers = useSelector(selectFavoriteOffers);
+  const amsterdamOffers = useMemo(() => favoriteOffers.slice(0, OFFER.AMSTERDAM_COUNT), [favoriteOffers]);
+  const cologneOffers = useMemo(() => favoriteOffers.slice(OFFER.AMSTERDAM_COUNT), [favoriteOffers]);
 
   return (
     <div className="page">
       <Header
         user={{
-          email: 'Oliver.conner@gmail.com',
-          favoriteCount: DEFAULT_FAVORITE_COUNT,
+          email: MOCK_EMAIL,
+          favoriteCount: FAVORITE_COUNT.DEFAULT,
         }}
       />
 
@@ -43,7 +40,7 @@ const FavoritesPage: FC<FavoritesPageProps> = ({offers}) => {
                       key={offer.id}
                       offer={offer}
                       variant={PlaceCardVariant.Favorites}
-                      isPremium={index === FIRST_OFFER_INDEX}
+                      isPremium={index === OFFER.FIRST_INDEX}
                     />
                   ))}
                 </div>

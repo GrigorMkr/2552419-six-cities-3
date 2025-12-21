@@ -1,5 +1,6 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Header from '../../components/header/header';
 import OfferGallery from '../../components/offer-gallery/offer-gallery';
 import PremiumMark from '../../components/premium-mark/premium-mark';
@@ -14,19 +15,16 @@ import ReviewForm from '../../components/review-form/review-form';
 import Map from '../../components/map/map';
 import PlaceCard from '../../components/place-card/place-card';
 import { PlaceCardVariant } from '../../types/place-card-variant';
-import { Offer } from '../../types/offer';
 import { MOCK_REVIEWS } from '../../mocks/reviews';
-import { NEARBY_OFFERS_COUNT, DEFAULT_BEDROOMS_COUNT, DEFAULT_MAX_ADULTS_COUNT, DEFAULT_FAVORITE_COUNT, PREMIUM_OFFER_INDEX, GALLERY_IMAGES, INSIDE_ITEMS } from '../../constants';
+import { OFFER, FAVORITE_COUNT, MOCK_EMAIL, GALLERY_IMAGES, INSIDE_ITEMS } from '../../constants';
+import { selectOffers } from '../../store/data-slice';
 
-type OfferPageProps = {
-  offers: Offer[];
-}
-
-const OfferPage: FC<OfferPageProps> = ({offers}) => {
+const OfferPage: FC = () => {
   const { id } = useParams();
-  const currentOffer = offers.find((offer) => offer.id === id);
-  const nearbyOffers = offers.filter((offer) => offer.id !== id).slice(0, NEARBY_OFFERS_COUNT);
-  const mapOffers = currentOffer ? [currentOffer, ...nearbyOffers] : nearbyOffers;
+  const offers = useSelector(selectOffers);
+  const currentOffer = useMemo(() => offers.find((offer) => offer.id === id), [offers, id]);
+  const nearbyOffers = useMemo(() => offers.filter((offer) => offer.id !== id).slice(0, OFFER.NEARBY_COUNT), [offers, id]);
+  const mapOffers = useMemo(() => currentOffer ? [currentOffer, ...nearbyOffers] : nearbyOffers, [currentOffer, nearbyOffers]);
 
   if (!currentOffer) {
     return (
@@ -45,8 +43,8 @@ const OfferPage: FC<OfferPageProps> = ({offers}) => {
     <div className="page">
       <Header
         user={{
-          email: 'Oliver.conner@gmail.com',
-          favoriteCount: DEFAULT_FAVORITE_COUNT,
+          email: MOCK_EMAIL,
+          favoriteCount: FAVORITE_COUNT.DEFAULT,
         }}
       />
 
@@ -63,7 +61,7 @@ const OfferPage: FC<OfferPageProps> = ({offers}) => {
                 <BookmarkButton size="large" isActive={currentOffer.isFavorite} />
               </div>
               <Rating rating={currentOffer.rating} className="offer__rating" showValue />
-              <OfferFeatures type={currentOffer.type} bedrooms={DEFAULT_BEDROOMS_COUNT} maxAdults={DEFAULT_MAX_ADULTS_COUNT} />
+              <OfferFeatures type={currentOffer.type} bedrooms={OFFER.DEFAULT_BEDROOMS_COUNT} maxAdults={OFFER.DEFAULT_MAX_ADULTS_COUNT} />
               <Price value={currentOffer.price} variant="offer" />
               <OfferInside items={INSIDE_ITEMS} />
               <OfferHost
@@ -90,7 +88,7 @@ const OfferPage: FC<OfferPageProps> = ({offers}) => {
                   key={offer.id}
                   offer={offer}
                   variant={PlaceCardVariant.NearPlaces}
-                  isPremium={index === PREMIUM_OFFER_INDEX}
+                  isPremium={index === OFFER.PREMIUM_INDEX}
                 />
               ))}
             </div>

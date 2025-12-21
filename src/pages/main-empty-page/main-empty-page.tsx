@@ -1,22 +1,22 @@
 import { FC, useMemo } from 'react';
 import Header from '../../components/header/header';
 import LocationsList from '../../components/locations-list/locations-list';
-import { DEFAULT_FAVORITE_COUNT, CITIES, EMPTY_PAGE_ACTIVE_CITY_NAME } from '../../constants';
+import { FAVORITE_COUNT, CITIES, CITY_NAME, MOCK_EMAIL } from '../../constants';
 
 const MainEmptyPage: FC = () => {
+  const activeCity = useMemo(() => CITIES.find((city) => city.name === CITY_NAME.EMPTY_PAGE_ACTIVE), []);
+
   const citiesWithActive = useMemo(() => CITIES.map((city) => ({
     ...city,
-    isActive: city.name === EMPTY_PAGE_ACTIVE_CITY_NAME,
+    isActive: city.name === CITY_NAME.EMPTY_PAGE_ACTIVE,
   })), []);
-
-  const activeCity = EMPTY_PAGE_ACTIVE_CITY_NAME;
 
   return (
     <div className="page page--gray page--main">
       <Header
         user={{
-          email: 'Oliver.conner@gmail.com',
-          favoriteCount: DEFAULT_FAVORITE_COUNT,
+          email: MOCK_EMAIL,
+          favoriteCount: FAVORITE_COUNT.DEFAULT,
         }}
       />
 
@@ -28,7 +28,7 @@ const MainEmptyPage: FC = () => {
             <section className="cities__no-places">
               <div className="cities__status-wrapper tabs__content">
                 <b className="cities__status">No places to stay available</b>
-                <p className="cities__status-description">We could not find any property available at the moment in {activeCity}</p>
+                <p className="cities__status-description">We could not find any property available at the moment in {activeCity?.name}</p>
               </div>
             </section>
             <div className="cities__right-section"></div>

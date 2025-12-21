@@ -12,7 +12,7 @@ import Reviews from '../../components/reviews/reviews';
 import Map from '../../components/map/map';
 import PlaceCard from '../../components/place-card/place-card';
 import { PlaceCardVariant } from '../../types/place-card-variant';
-import { DEFAULT_BEDROOMS_COUNT, DEFAULT_MAX_ADULTS_COUNT, PREMIUM_OFFER_INDEX, MOCK_OFFER_RATING, MOCK_OFFER_PRICE, GALLERY_IMAGES, INSIDE_ITEMS, REVIEWS_DATA, NEARBY_OFFERS } from '../../constants';
+import { OFFER, MOCK_OFFER, GALLERY_IMAGES, INSIDE_ITEMS, REVIEWS_DATA, NEARBY_OFFERS } from '../../constants';
 
 const OfferNotLoggedPage: FC = () => (
   <div className="page">
@@ -30,9 +30,9 @@ const OfferNotLoggedPage: FC = () => (
               </h1>
               <BookmarkButton size="large" />
             </div>
-            <Rating rating={MOCK_OFFER_RATING} className="offer__rating" showValue />
-            <OfferFeatures type="Apartment" bedrooms={DEFAULT_BEDROOMS_COUNT} maxAdults={DEFAULT_MAX_ADULTS_COUNT} />
-            <Price value={MOCK_OFFER_PRICE} variant="offer" />
+            <Rating rating={MOCK_OFFER.RATING} className="offer__rating" showValue />
+            <OfferFeatures type="Apartment" bedrooms={OFFER.DEFAULT_BEDROOMS_COUNT} maxAdults={OFFER.DEFAULT_MAX_ADULTS_COUNT} />
+            <Price value={MOCK_OFFER.PRICE} variant="offer" />
             <OfferInside items={INSIDE_ITEMS} />
             <OfferHost
               name="Angelina"
@@ -57,7 +57,7 @@ const OfferNotLoggedPage: FC = () => (
                 key={offer.id}
                 offer={offer}
                 variant={PlaceCardVariant.NearPlaces}
-                isPremium={index === PREMIUM_OFFER_INDEX}
+                isPremium={index === OFFER.PREMIUM_INDEX}
               />
             ))}
           </div>

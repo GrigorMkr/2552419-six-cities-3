@@ -1,6 +1,11 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { LOGO_WIDTH, LOGO_HEIGHT, AppRoute } from '../../constants';
+import { AppRoute } from '../../constants';
+
+const LOGO = {
+  WIDTH: 81,
+  HEIGHT: 41,
+} as const;
 import AuthorizedNavList from './authorized-nav-list';
 import UnauthorizedNavList from './unauthorized-nav-list';
 
@@ -21,7 +26,7 @@ const Header: FC<HeaderProps> = ({user}) => {
         <div className="header__wrapper">
           <div className="header__left">
             <Link className="header__logo-link header__logo-link--active" to={AppRoute.Main}>
-              <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width={LOGO_WIDTH} height={LOGO_HEIGHT} />
+              <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width={LOGO.WIDTH} height={LOGO.HEIGHT} />
             </Link>
           </div>
           <nav className="header__nav">
