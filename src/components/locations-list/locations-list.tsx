@@ -1,7 +1,7 @@
 import { FC, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { City } from '../../types/offer';
-import { changeCity } from '../../store/action';
+import { changeCity } from '../../store/data-slice';
 
 type LocationsListProps = {
   cities: City[];

@@ -9,7 +9,7 @@ import OfferPage from '../pages/offer-page/offer-page';
 import NotFoundPage from '../pages/not-found-page/not-found-page';
 import PrivateRoute from '../components/private-route/private-route';
 import { AppRoute } from '../constants';
-import { loadOffers } from '../store/action';
+import { loadOffers } from '../store/data-slice';
 import { MOCK_OFFERS } from '../mocks/offers';
 import type { Offer } from '../types/offer';
 
