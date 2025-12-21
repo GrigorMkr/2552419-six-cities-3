@@ -1,31 +1,28 @@
+import { FC, useMemo } from 'react';
 import Header from '../../components/header/header';
 import LocationsList from '../../components/locations-list/locations-list';
-import { City } from '../../types/offer';
+import { DEFAULT_FAVORITE_COUNT, CITIES, EMPTY_PAGE_ACTIVE_CITY_NAME } from '../../constants';
 
-const CITIES: City[] = [
-  { name: 'Paris' },
-  { name: 'Cologne' },
-  { name: 'Brussels' },
-  { name: 'Amsterdam' },
-  { name: 'Hamburg' },
-  { name: 'Dusseldorf', isActive: true },
-];
+const MainEmptyPage: FC = () => {
+  const citiesWithActive = useMemo(() => CITIES.map((city) => ({
+    ...city,
+    isActive: city.name === EMPTY_PAGE_ACTIVE_CITY_NAME,
+  })), []);
 
-function MainEmptyPage(): JSX.Element {
-  const activeCity = CITIES.find((city) => city.isActive)?.name || 'Dusseldorf';
+  const activeCity = EMPTY_PAGE_ACTIVE_CITY_NAME;
 
   return (
     <div className="page page--gray page--main">
       <Header
         user={{
           email: 'Oliver.conner@gmail.com',
-          favoriteCount: 3,
+          favoriteCount: DEFAULT_FAVORITE_COUNT,
         }}
       />
 
       <main className="page__main page__main--index page__main--index-empty">
         <h1 className="visually-hidden">Cities</h1>
-        <LocationsList cities={CITIES} activeCity={activeCity} />
+        <LocationsList cities={citiesWithActive} activeCity={activeCity} />
         <div className="cities">
           <div className="cities__places-container cities__places-container--empty container">
             <section className="cities__no-places">
@@ -40,6 +37,6 @@ function MainEmptyPage(): JSX.Element {
       </main>
     </div>
   );
-}
+};
 
 export default MainEmptyPage;

@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, FC } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Offer } from '../../types/offer';
+import { DEFAULT_ICON, ACTIVE_ICON } from '../../constants';
 
 type MapProps = {
   offers: Offer[];
@@ -9,19 +10,7 @@ type MapProps = {
   className?: string;
 }
 
-const DEFAULT_ICON = L.icon({
-  iconUrl: 'img/pin.svg',
-  iconSize: [27, 39],
-  iconAnchor: [13.5, 39],
-});
-
-const ACTIVE_ICON = L.icon({
-  iconUrl: 'img/pin-active.svg',
-  iconSize: [27, 39],
-  iconAnchor: [13.5, 39],
-});
-
-function Map({offers, selectedOfferId, className = ''}: MapProps): JSX.Element {
+const Map: FC<MapProps> = ({offers, selectedOfferId, className = ''}) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
@@ -93,6 +82,6 @@ function Map({offers, selectedOfferId, className = ''}: MapProps): JSX.Element {
   }, [offers, selectedOfferId]);
 
   return <div ref={mapRef} className={`map ${className}`}></div>;
-}
+};
 
 export default Map;
