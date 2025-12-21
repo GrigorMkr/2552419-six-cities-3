@@ -5,13 +5,10 @@ import Footer from '../../components/footer/footer';
 import PlaceCard from '../../components/place-card/place-card';
 import { PlaceCardVariant } from '../../types/place-card-variant';
 import { OFFER, FAVORITE_COUNT, MOCK_EMAIL } from '../../constants';
-import type { RootState } from '../../store';
-
-const selectOffers = (state: RootState) => state.data.offers;
+import { selectFavoriteOffers } from '../../store/data-slice';
 
 const FavoritesPage: FC = () => {
-  const offers = useSelector(selectOffers);
-  const favoriteOffers = useMemo(() => offers.filter((offer) => offer.isFavorite), [offers]);
+  const favoriteOffers = useSelector(selectFavoriteOffers);
   const amsterdamOffers = useMemo(() => favoriteOffers.slice(0, OFFER.AMSTERDAM_COUNT), [favoriteOffers]);
   const cologneOffers = useMemo(() => favoriteOffers.slice(OFFER.AMSTERDAM_COUNT), [favoriteOffers]);
 

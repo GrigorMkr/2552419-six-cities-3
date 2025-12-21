@@ -2,11 +2,6 @@ import L from 'leaflet';
 import type { City, Offer } from './types/offer';
 import type { Review } from './mocks/reviews';
 
-type SortOption = {
-  name: string;
-  value: string;
-}
-
 const MAP_ICON = {
   WIDTH: 27,
   HEIGHT: 39,
@@ -53,11 +48,23 @@ const CITY_NAME = {
   EMPTY_PAGE_ACTIVE: 'Dusseldorf',
 } as const;
 
+enum SortType {
+  Popular = 'popular',
+  PriceLow = 'price-low',
+  PriceHigh = 'price-high',
+  Rating = 'rating',
+}
+
+type SortOption = {
+  name: string;
+  value: SortType;
+}
+
 const DEFAULT_SORT_OPTIONS: SortOption[] = [
-  { name: 'Popular', value: 'popular' },
-  { name: 'Price: low to high', value: 'price-low' },
-  { name: 'Price: high to low', value: 'price-high' },
-  { name: 'Top rated first', value: 'rating' },
+  { name: 'Popular', value: SortType.Popular },
+  { name: 'Price: low to high', value: SortType.PriceLow },
+  { name: 'Price: high to low', value: SortType.PriceHigh },
+  { name: 'Top rated first', value: SortType.Rating },
 ];
 
 const GALLERY_IMAGES = [
@@ -174,7 +181,7 @@ enum AppRoute {
 const getOfferUrl = (id: string): string => `/offer/${id}`;
 
 export type { SortOption };
-export { AppRoute };
+export { AppRoute, SortType };
 export {
   MAP_ICON,
   RATING,

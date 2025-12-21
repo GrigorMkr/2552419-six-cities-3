@@ -1,5 +1,5 @@
 import { FC, useCallback } from 'react';
-import { DEFAULT_SORT_OPTIONS, SortOption } from '../../constants';
+import { DEFAULT_SORT_OPTIONS, SortOption, SortType } from '../../constants';
 
 const ARROW_ICON = {
   WIDTH: 7,
@@ -10,14 +10,14 @@ type SortOptionsProps = {
   currentSort?: string;
   isOpen?: boolean;
   options?: SortOption[];
-  onSortChange?: (sortType: 'popular' | 'price-low' | 'price-high' | 'rating') => void;
+  onSortChange?: (sortType: SortType) => void;
   onSortToggle?: () => void;
 }
 
 const SortOptions: FC<SortOptionsProps> = ({currentSort = 'Popular', isOpen = false, options = DEFAULT_SORT_OPTIONS, onSortChange, onSortToggle}) => {
-  const handleOptionClick = useCallback((value: string) => {
+  const handleOptionClick = useCallback((value: SortType) => {
     if (onSortChange) {
-      onSortChange(value as 'popular' | 'price-low' | 'price-high' | 'rating');
+      onSortChange(value);
     }
   }, [onSortChange]);
 

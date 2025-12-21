@@ -13,7 +13,7 @@ type RatingStarProps = {
 }
 
 const RatingStar: FC<RatingStarProps> = ({ value, title, checked, onChange }) => {
-  const id = value === 1 ? `${value}-star` : `${value}-stars`;
+  const id = `${value}-stars`;
 
   return (
     <>

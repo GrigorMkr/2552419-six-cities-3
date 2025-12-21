@@ -1,9 +1,7 @@
 import { FC } from 'react';
 import Rating from '../rating/rating';
 
-const AVATAR = {
-  SIZE: 54,
-} as const;
+const AVATAR_SIZE = 54;
 
 type ReviewItemProps = {
   user: {
@@ -29,7 +27,7 @@ const ReviewItem: FC<ReviewItemProps> = ({user, rating, comment, date}) => {
     <li className="reviews__item">
       <div className="reviews__user user">
         <div className="reviews__avatar-wrapper user__avatar-wrapper">
-          <img className="reviews__avatar user__avatar" src={user.avatarUrl} width={AVATAR.SIZE} height={AVATAR.SIZE} alt="Reviews avatar" />
+          <img className="reviews__avatar user__avatar" src={user.avatarUrl} width={AVATAR_SIZE} height={AVATAR_SIZE} alt="Reviews avatar" />
         </div>
         <span className="reviews__user-name">
           {user.name}

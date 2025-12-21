@@ -2,6 +2,7 @@ import { FC } from 'react';
 import PlaceCard from '../place-card/place-card';
 import SortOptions from '../sort-options/sort-options';
 import { Offer } from '../../types/offer';
+import { SortType } from '../../constants';
 
 type PlacesListProps = {
   offers: Offer[];
@@ -9,12 +10,13 @@ type PlacesListProps = {
   cityName: string;
   currentSort?: string;
   isSortOpen?: boolean;
-  onSortChange?: (sortType: 'popular' | 'price-low' | 'price-high' | 'rating') => void;
+  onSortChange?: (sortType: SortType) => void;
   onSortToggle?: () => void;
-  onCardHover?: (offerId: string | undefined) => void;
+  onCardHover?: (offerId: string) => void;
+  onCardLeave?: () => void;
 }
 
-const PlacesList: FC<PlacesListProps> = ({offers, offersCount, cityName, currentSort, isSortOpen, onSortChange, onSortToggle, onCardHover}) => (
+const PlacesList: FC<PlacesListProps> = ({offers, offersCount, cityName, currentSort, isSortOpen, onSortChange, onSortToggle, onCardHover, onCardLeave}) => (
   <section className="cities__places places">
     <h2 className="visually-hidden">Places</h2>
     <b className="places__found">{offersCount} places to stay in {cityName}</b>
@@ -25,6 +27,7 @@ const PlacesList: FC<PlacesListProps> = ({offers, offersCount, cityName, current
           key={offer.id}
           offer={offer}
           onCardHover={onCardHover}
+          onCardLeave={onCardLeave}
         />
       ))}
     </div>

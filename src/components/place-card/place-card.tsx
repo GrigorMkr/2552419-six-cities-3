@@ -21,12 +21,13 @@ const PLACE_CARD_IMAGE = {
 
 type PlaceCardProps = {
   offer: Offer;
-  onCardHover?: (offerId: string | undefined) => void;
+  onCardHover?: (offerId: string) => void;
+  onCardLeave?: () => void;
   variant?: PlaceCardVariant;
   isPremium?: boolean;
 }
 
-const PlaceCard: FC<PlaceCardProps> = ({offer, onCardHover, variant = PlaceCardVariant.Cities, isPremium = false}) => {
+const PlaceCard: FC<PlaceCardProps> = ({offer, onCardHover, onCardLeave, variant = PlaceCardVariant.Cities, isPremium = false}) => {
   let imageWrapperClass = 'cities__image-wrapper';
   let cardClass = 'cities__card';
 
@@ -48,8 +49,8 @@ const PlaceCard: FC<PlaceCardProps> = ({offer, onCardHover, variant = PlaceCardV
   }, [onCardHover, offer.id]);
 
   const handleMouseLeave = useCallback(() => {
-    onCardHover?.(undefined);
-  }, [onCardHover]);
+    onCardLeave?.();
+  }, [onCardLeave]);
 
   return (
     <article

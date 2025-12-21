@@ -4,13 +4,8 @@ import Header from '../../components/header/header';
 import LocationsList from '../../components/locations-list/locations-list';
 import PlacesList from '../../components/places-list/places-list';
 import Map from '../../components/map/map';
-import { FAVORITE_COUNT, CITIES, DEFAULT_SORT_OPTIONS, MOCK_EMAIL } from '../../constants';
-import type { RootState } from '../../store';
-
-type SortType = 'popular' | 'price-low' | 'price-high' | 'rating';
-
-const selectCity = (state: RootState) => state.data.city;
-const selectOffers = (state: RootState) => state.data.offers;
+import { FAVORITE_COUNT, CITIES, DEFAULT_SORT_OPTIONS, MOCK_EMAIL, SortType } from '../../constants';
+import { selectCity, selectOffers } from '../../store/data-slice';
 
 const MainPage: FC = () => {
   const city = useSelector(selectCity);
@@ -24,27 +19,31 @@ const MainPage: FC = () => {
   })), [city]);
 
   const [selectedOfferId, setSelectedOfferId] = useState<string | undefined>();
-  const [currentSort, setCurrentSort] = useState<SortType>('popular');
+  const [currentSort, setCurrentSort] = useState<SortType>(SortType.Popular);
   const [isSortOpen, setIsSortOpen] = useState(false);
 
   const sortedOffers = useMemo(() => {
     const offersCopy = [...filteredOffers];
 
     switch (currentSort) {
-      case 'price-low':
+      case SortType.PriceLow:
         return offersCopy.sort((a, b) => a.price - b.price);
-      case 'price-high':
+      case SortType.PriceHigh:
         return offersCopy.sort((a, b) => b.price - a.price);
-      case 'rating':
+      case SortType.Rating:
         return offersCopy.sort((a, b) => b.rating - a.rating);
-      case 'popular':
+      case SortType.Popular:
       default:
         return offersCopy;
     }
   }, [filteredOffers, currentSort]);
 
-  const handleCardHover = useCallback((offerId: string | undefined) => {
+  const handleCardHover = useCallback((offerId: string) => {
     setSelectedOfferId(offerId);
+  }, []);
+
+  const handleCardLeave = useCallback(() => {
+    setSelectedOfferId(undefined);
   }, []);
 
   const handleSortChange = useCallback((sortType: SortType) => {
@@ -84,6 +83,7 @@ const MainPage: FC = () => {
               onSortChange={handleSortChange}
               onSortToggle={handleSortToggle}
               onCardHover={handleCardHover}
+              onCardLeave={handleCardLeave}
             />
             <div className="cities__right-section">
               <Map offers={sortedOffers} selectedOfferId={selectedOfferId} className="cities__map" />

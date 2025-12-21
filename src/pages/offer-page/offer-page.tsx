@@ -17,9 +17,7 @@ import PlaceCard from '../../components/place-card/place-card';
 import { PlaceCardVariant } from '../../types/place-card-variant';
 import { MOCK_REVIEWS } from '../../mocks/reviews';
 import { OFFER, FAVORITE_COUNT, MOCK_EMAIL, GALLERY_IMAGES, INSIDE_ITEMS } from '../../constants';
-import type { RootState } from '../../store';
-
-const selectOffers = (state: RootState) => state.data.offers;
+import { selectOffers } from '../../store/data-slice';
 
 const OfferPage: FC = () => {
   const { id } = useParams();

@@ -1,13 +1,13 @@
 import { useState, FormEvent, ChangeEvent, useCallback, FC } from 'react';
-import { MIN_COMMENT_LENGTH, RATING } from '../../constants';
+import { MIN_COMMENT_LENGTH } from '../../constants';
 import RatingStar from '../rating-star/rating-star';
 
 const RATING_OPTIONS = [
-  { value: RATING.MAX, title: 'perfect' },
-  { value: RATING.VALUE_4, title: 'good' },
-  { value: RATING.VALUE_3, title: 'not bad' },
-  { value: RATING.VALUE_2, title: 'badly' },
-  { value: RATING.MIN, title: 'terribly' },
+  { value: 5, title: 'perfect' },
+  { value: 4, title: 'good' },
+  { value: 3, title: 'not bad' },
+  { value: 2, title: 'badly' },
+  { value: 1, title: 'terribly' },
 ] as const;
 
 const ReviewForm: FC = () => {
