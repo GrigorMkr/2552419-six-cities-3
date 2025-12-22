@@ -59,8 +59,8 @@ const Map: FC<MapProps> = ({offers, selectedOfferId, className = ''}) => {
       if (mapInstanceRef.current) {
         try {
           mapInstanceRef.current.remove();
-        } catch (error) {
-          // Ignore errors during cleanup
+        } catch {
+          // Ignore cleanup errors
         }
         mapInstanceRef.current = null;
         markersRef.current = [];
@@ -106,14 +106,13 @@ const Map: FC<MapProps> = ({offers, selectedOfferId, className = ''}) => {
       if (map.getContainer() && map.getContainer().parentElement) {
         try {
           map.setView([latitude, longitude], zoom, { animate: false });
-        } catch (error) {
-          // Map might not be fully initialized, use whenReady as fallback
+        } catch {
           map.whenReady(() => {
             if (mapInstanceRef.current && mapInstanceRef.current.getContainer()) {
               try {
                 mapInstanceRef.current.setView([latitude, longitude], zoom, { animate: false });
-              } catch (e) {
-                // Ignore errors if map is being destroyed
+              } catch {
+                // Ignore map view errors
               }
             }
           });
