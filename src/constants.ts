@@ -1,4 +1,3 @@
-import L from 'leaflet';
 import type { City, Offer } from './types/offer';
 import type { Review } from './mocks/reviews';
 
@@ -150,18 +149,6 @@ const NEARBY_OFFERS: Offer[] = [
   },
 ];
 
-const DEFAULT_ICON = L.icon({
-  iconUrl: 'img/pin.svg',
-  iconSize: [MAP_ICON.WIDTH, MAP_ICON.HEIGHT],
-  iconAnchor: [MAP_ICON.ANCHOR_X, MAP_ICON.ANCHOR_Y],
-});
-
-const ACTIVE_ICON = L.icon({
-  iconUrl: 'img/pin-active.svg',
-  iconSize: [MAP_ICON.WIDTH, MAP_ICON.HEIGHT],
-  iconAnchor: [MAP_ICON.ANCHOR_X, MAP_ICON.ANCHOR_Y],
-});
-
 const CITIES: City[] = [
   { name: 'Paris' },
   { name: 'Cologne' },
@@ -198,8 +185,6 @@ export {
   INSIDE_ITEMS,
   REVIEWS_DATA,
   NEARBY_OFFERS,
-  DEFAULT_ICON,
-  ACTIVE_ICON,
   CITIES,
   getOfferUrl,
 };

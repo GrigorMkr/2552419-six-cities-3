@@ -1,8 +1,8 @@
-import { useEffect, useRef, FC } from 'react';
+import { useEffect, useRef, FC, useMemo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Offer } from '../../types/offer';
-import { DEFAULT_ICON, ACTIVE_ICON } from '../../constants';
+import { MAP_ICON } from '../../constants';
 
 type MapProps = {
   offers: Offer[];
@@ -14,6 +14,20 @@ const Map: FC<MapProps> = ({offers, selectedOfferId, className = ''}) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
+
+  const baseUrl = import.meta.env.BASE_URL || '';
+
+  const defaultIcon = useMemo(() => L.icon({
+    iconUrl: `${baseUrl}img/pin.svg`,
+    iconSize: [MAP_ICON.WIDTH, MAP_ICON.HEIGHT],
+    iconAnchor: [MAP_ICON.ANCHOR_X, MAP_ICON.ANCHOR_Y],
+  }), [baseUrl]);
+
+  const activeIcon = useMemo(() => L.icon({
+    iconUrl: `${baseUrl}img/pin-active.svg`,
+    iconSize: [MAP_ICON.WIDTH, MAP_ICON.HEIGHT],
+    iconAnchor: [MAP_ICON.ANCHOR_X, MAP_ICON.ANCHOR_Y],
+  }), [baseUrl]);
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current || offers.length === 0) {
@@ -67,7 +81,7 @@ const Map: FC<MapProps> = ({offers, selectedOfferId, className = ''}) => {
       const isActive = offer.id === selectedOfferId;
 
       const marker = L.marker([latitude, longitude], {
-        icon: isActive ? ACTIVE_ICON : DEFAULT_ICON,
+        icon: isActive ? activeIcon : defaultIcon,
       });
 
       marker.addTo(map);
