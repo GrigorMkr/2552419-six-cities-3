@@ -136,8 +136,10 @@
   z-index: 3;
   padding: 2rem;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .not-found-developer {
@@ -155,6 +157,25 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  margin: 0;
+}
+
+.not-found-mentor {
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: "Arial Black", "Impact", sans-serif;
+  letter-spacing: 0.1em;
+  color: #ff00ff;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1px #00ffff;
+  text-stroke: 1px #00ffff;
+  text-shadow: 
+    0 0 10px #00ffff,
+    0 0 20px #00ffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  margin: 0;
 }
 
 .not-found-particles {

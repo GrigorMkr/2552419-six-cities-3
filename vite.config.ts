@@ -65,7 +65,13 @@ export default defineConfig(() => {
 
             writeFileSync(indexPath, indexHtml);
             writeFileSync(fourOhFourPath, indexHtml);
+            
+            // Create .nojekyll file to disable Jekyll processing on GitHub Pages
+            const nojekyllPath = resolve(__dirname, 'dist/.nojekyll');
+            writeFileSync(nojekyllPath, '');
+            
             console.log(`✓ Created 404.html for GitHub Pages (base: ${basePath})`);
+            console.log(`✓ Created .nojekyll to disable Jekyll processing`);
           } catch (error) {
             console.error('Error creating 404.html:', error);
           }

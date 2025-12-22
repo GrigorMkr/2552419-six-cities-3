@@ -49,6 +49,7 @@ const NotFoundPage: FC = () => {
 
       <footer className="not-found-footer">
         <p className="not-found-developer">Developed by Grigor Mkrtchyan</p>
+        <p className="not-found-mentor">Mentor: Yuriy Posledov</p>
       </footer>
     </div>
   );
