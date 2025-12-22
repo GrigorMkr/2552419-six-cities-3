@@ -44,7 +44,6 @@ const App: FC = () => {
   return (
     <BrowserRouter basename={basename}>
       <Routes>
-        <Route index element={<MainPage />} />
         <Route path={AppRoute.Main} element={<MainPage />} />
         <Route path={AppRoute.Login} element={<LoginPage />} />
         <Route
