@@ -34,7 +34,7 @@ const NotFoundPage: FC = () => {
 
       <header className="not-found-header">
         <Link to={AppRoute.Main} className="not-found-logo-link">
-          <img src="img/logo.svg" alt="6 cities logo" className="not-found-logo" />
+          <img src={`${import.meta.env.BASE_URL}img/logo.svg`} alt="6 cities logo" className="not-found-logo" />
         </Link>
       </header>
 

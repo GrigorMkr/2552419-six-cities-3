@@ -3,9 +3,11 @@
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { readFileSync, writeFileSync } from 'fs';
+import { resolve } from 'path';
 
 export default defineConfig(() => {
-  const base = '/2552419-six-cities-3/';
+  const base = process.env.BASE_PATH || '/2552419-six-cities-3/';
 
   return {
     base,
@@ -18,6 +20,17 @@ export default defineConfig(() => {
             /href="css\/main.css"/g,
             `href="${base}css/main.css"`
           );
+        },
+      },
+      {
+        name: 'generate-404',
+        closeBundle() {
+          try {
+            const indexHtml = readFileSync(resolve(__dirname, 'dist/index.html'), 'utf-8');
+            writeFileSync(resolve(__dirname, 'dist/404.html'), indexHtml);
+          } catch {
+            // Ignore errors if dist doesn't exist yet
+          }
         },
       },
     ],
