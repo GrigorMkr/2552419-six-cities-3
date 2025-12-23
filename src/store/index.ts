@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import dataReducer from './data-slice';
+import authReducer from './auth-slice';
 import type { DataState } from './data-slice';
 import { createAPI } from '../api/api';
 
@@ -10,6 +11,7 @@ const api = createAPI();
 const store = configureStore({
   reducer: {
     data: dataReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

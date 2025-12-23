@@ -27,3 +27,9 @@ export type User = {
   favoriteCount?: number;
 }
 
+export type AuthInfo = {
+  token: string;
+  email: string;
+  avatarUrl?: string;
+}
+

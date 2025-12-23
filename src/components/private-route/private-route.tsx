@@ -1,13 +1,17 @@
 import { FC, ReactElement } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AppRoute } from '../../constants';
+import { useAppSelector } from '../../store';
+import { selectIsAuthorized } from '../../store/auth-slice';
 
 type PrivateRouteProps = {
   children: ReactElement;
-  isAuthorized: boolean;
 }
 
-const PrivateRoute: FC<PrivateRouteProps> = ({children, isAuthorized}) => (isAuthorized ? children : <Navigate to={AppRoute.Login} />);
+const PrivateRoute: FC<PrivateRouteProps> = ({children}) => {
+  const isAuthorized = useAppSelector(selectIsAuthorized);
+  return isAuthorized ? children : <Navigate to={AppRoute.Login} />;
+};
 
 export default PrivateRoute;
 
