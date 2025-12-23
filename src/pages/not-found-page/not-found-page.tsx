@@ -72,6 +72,14 @@ const NotFoundPage: FC = () => {
             Yuriy Posledov
           </a>
         </p>
+        <a
+          href="https://htmlacademy.ru"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="not-found-academy-link"
+        >
+          HTML Academy
+        </a>
       </footer>
     </div>
   );
