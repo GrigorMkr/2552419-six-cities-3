@@ -182,6 +182,22 @@
   margin: 0;
 }
 
+.not-found-link-text {
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.not-found-link-text:hover {
+  text-shadow: 
+    0 0 15px currentColor,
+    0 0 25px currentColor,
+    0 0 35px currentColor;
+  transform: scale(1.1);
+  display: inline-block;
+}
+
 .not-found-particles {
   position: absolute;
   top: 0;
