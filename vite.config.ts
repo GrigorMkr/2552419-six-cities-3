@@ -7,7 +7,8 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 
 export default defineConfig(() => {
-  const base = process.env.BASE_PATH || '/2552419-six-cities-3/';
+  const isProduction = process.env.NODE_ENV === 'production';
+  const base = isProduction ? (process.env.BASE_PATH || '/2552419-six-cities-3/') : '/';
 
   return {
     base,
