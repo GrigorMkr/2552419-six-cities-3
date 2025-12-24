@@ -69,7 +69,14 @@ const ReviewForm: FC<ReviewFormProps> = ({ offerId }) => {
   }
 
   return (
-    <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmit}>
+    <form
+      className="reviews__form form"
+      action="#"
+      method="post"
+      onSubmit={(e) => {
+        void handleSubmit(e);
+      }}
+    >
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
         {RATING_OPTIONS.map((option) => (
