@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from './index';
+import type { RootState } from '../hooks/use-redux';
 import type { User } from '../types/offer';
 
 export enum AuthorizationStatus {
