@@ -3,22 +3,25 @@ import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import PlaceCard from '../../components/place-card/place-card';
 import { PlaceCardVariant } from '../../types/place-card-variant';
-import { OFFER, FAVORITE_COUNT, MOCK_EMAIL } from '../../constants';
+import { OFFER } from '../../constants';
 import { selectFavoriteOffers } from '../../store/data-slice';
-import { useAppSelector } from '../../store';
+import { selectUser } from '../../store/auth-slice';
+import { useAppSelector } from '../../hooks/use-redux';
 
 const FavoritesPage: FC = () => {
   const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const user = useAppSelector(selectUser);
   const amsterdamOffers = useMemo(() => favoriteOffers.slice(0, OFFER.AMSTERDAM_COUNT), [favoriteOffers]);
   const cologneOffers = useMemo(() => favoriteOffers.slice(OFFER.AMSTERDAM_COUNT), [favoriteOffers]);
 
   return (
     <div className="page">
       <Header
-        user={{
-          email: MOCK_EMAIL,
-          favoriteCount: FAVORITE_COUNT.DEFAULT,
-        }}
+        user={user ? {
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+          favoriteCount: favoriteOffers.length,
+        } : undefined}
       />
 
       <main className="page__main page__main--favorites">
@@ -29,9 +32,9 @@ const FavoritesPage: FC = () => {
               <li className="favorites__locations-items">
                 <div className="favorites__locations locations locations--current">
                   <div className="locations__item">
-                    <a className="locations__item-link" href="#">
+                    <span className="locations__item-link">
                       <span>Amsterdam</span>
-                    </a>
+                    </span>
                   </div>
                 </div>
                 <div className="favorites__places">
@@ -49,9 +52,9 @@ const FavoritesPage: FC = () => {
               <li className="favorites__locations-items">
                 <div className="favorites__locations locations locations--current">
                   <div className="locations__item">
-                    <a className="locations__item-link" href="#">
+                    <span className="locations__item-link">
                       <span>Cologne</span>
-                    </a>
+                    </span>
                   </div>
                 </div>
                 <div className="favorites__places">

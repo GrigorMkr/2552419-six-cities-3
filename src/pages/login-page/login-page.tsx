@@ -1,10 +1,16 @@
-import { FC, FormEvent, useState, useEffect } from 'react';
+import { FC, FormEvent, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/header';
-import { useAppDispatch, useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../hooks/use-redux';
 import { loginAction } from '../../store/api-actions';
 import { selectIsAuthorized } from '../../store/auth-slice';
 import { AppRoute } from '../../constants';
+
+const isValidPassword = (password: string): boolean => {
+  const hasLetter = /[a-zA-Z]/.test(password);
+  const hasDigit = /\d/.test(password);
+  return hasLetter && hasDigit;
+};
 
 const LoginPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -19,10 +25,10 @@ const LoginPage: FC = () => {
     }
   }, [isAuthorized, navigate]);
 
-  const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback(async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    if (password.trim() === '') {
+    if (password.trim() === '' || !isValidPassword(password)) {
       return;
     }
 
@@ -30,7 +36,7 @@ const LoginPage: FC = () => {
     if (loginAction.fulfilled.match(result)) {
       navigate(AppRoute.Main);
     }
-  };
+  }, [dispatch, email, navigate, password]);
 
   const onFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
     void handleSubmit(evt);
@@ -69,6 +75,8 @@ const LoginPage: FC = () => {
                   name="password"
                   placeholder="Password"
                   required
+                  pattern="^(?=.*[a-zA-Z])(?=.*\d).+$"
+                  title="Password must contain at least one letter and one digit"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -78,9 +86,9 @@ const LoginPage: FC = () => {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <a className="locations__item-link" href="#">
+              <span className="locations__item-link">
                 <span>Amsterdam</span>
-              </a>
+              </span>
             </div>
           </section>
         </div>

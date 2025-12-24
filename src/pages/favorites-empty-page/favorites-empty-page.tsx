@@ -1,16 +1,23 @@
 import { FC } from 'react';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
-import { FAVORITE_COUNT, MOCK_EMAIL } from '../../constants';
+import { selectFavoriteOffers } from '../../store/data-slice';
+import { selectUser } from '../../store/auth-slice';
+import { useAppSelector } from '../../hooks/use-redux';
 
-const FavoritesEmptyPage: FC = () => (
-  <div className="page page--favorites-empty">
-    <Header
-      user={{
-        email: MOCK_EMAIL,
-        favoriteCount: FAVORITE_COUNT.EMPTY,
-      }}
-    />
+const FavoritesEmptyPage: FC = () => {
+  const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const user = useAppSelector(selectUser);
+
+  return (
+    <div className="page page--favorites-empty">
+      <Header
+        user={user ? {
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+          favoriteCount: favoriteOffers.length,
+        } : undefined}
+      />
 
     <main className="page__main page__main--favorites page__main--favorites-empty">
       <div className="page__favorites-container container">
@@ -25,6 +32,7 @@ const FavoritesEmptyPage: FC = () => (
     </main>
     <Footer />
   </div>
-);
+  );
+};
 
 export default FavoritesEmptyPage;
