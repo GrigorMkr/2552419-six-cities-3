@@ -8,7 +8,8 @@ type RatingProps = {
 }
 
 const Rating: FC<RatingProps> = ({rating, className = '', showValue = false}) => {
-  const ratingPercent = Math.round(rating * PERCENT_PER_STAR);
+  const roundedRating = Math.round(rating);
+  const ratingPercent = roundedRating * PERCENT_PER_STAR;
 
   return (
     <div className={`rating ${className}`}>
