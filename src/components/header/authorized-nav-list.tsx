@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../constants';
-import { useAppDispatch } from '../../store';
+import { useAppDispatch } from '../../hooks/use-redux';
 import { logoutAction } from '../../store/api-actions';
 
 type AuthorizedNavListProps = {
@@ -15,8 +15,7 @@ type AuthorizedNavListProps = {
 const AuthorizedNavList: FC<AuthorizedNavListProps> = ({user}) => {
   const dispatch = useAppDispatch();
 
-  const handleSignOut = (evt: React.MouseEvent<HTMLAnchorElement>) => {
-    evt.preventDefault();
+  const handleSignOut = () => {
     dispatch(logoutAction());
   };
 
@@ -27,15 +26,15 @@ const AuthorizedNavList: FC<AuthorizedNavListProps> = ({user}) => {
           <div className="header__avatar-wrapper user__avatar-wrapper">
           </div>
           <span className="header__user-name user__name">{user.email}</span>
-          {user.favoriteCount !== undefined && (
+          {user.favoriteCount !== undefined && user.favoriteCount > 0 && (
             <span className="header__favorite-count">{user.favoriteCount}</span>
           )}
         </Link>
       </li>
       <li className="header__nav-item">
-        <a className="header__nav-link" href="#" onClick={handleSignOut}>
+        <button className="header__nav-link" type="button" onClick={handleSignOut}>
           <span className="header__signout">Sign out</span>
-        </a>
+        </button>
       </li>
     </>
   );
