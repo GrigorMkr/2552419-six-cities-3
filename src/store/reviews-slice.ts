@@ -30,10 +30,12 @@ const reviewsSlice = createSlice({
 export const { loadReviews, addReview } = reviewsSlice.actions;
 export default reviewsSlice.reducer;
 
+const EMPTY_REVIEWS_ARRAY: Review[] = [];
+
 const selectReviewsState = (state: RootState) => state.reviews.reviews;
 
 export const selectReviewsByOfferId = createSelector(
   [selectReviewsState, (_state: RootState, offerId: string) => offerId],
-  (reviews, offerId) => reviews[offerId] || []
+  (reviews, offerId): Review[] => reviews[offerId] || EMPTY_REVIEWS_ARRAY
 );
 

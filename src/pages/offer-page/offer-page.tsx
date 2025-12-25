@@ -14,9 +14,9 @@ import Map from '../../components/map/map';
 import PlaceCard from '../../components/place-card/place-card';
 import { PlaceCardVariant } from '../../types/place-card-variant';
 import { OFFER, AppRoute } from '../../constants';
-import { selectOffers, selectFavoriteOffers, selectNearbyOffers } from '../../store/data-slice';
+import { selectNearbyOffers, selectOfferById } from '../../store/data-slice';
 import { selectReviewsByOfferId } from '../../store/reviews-slice';
-import { useAppDispatch, useAppSelector } from '../../hooks/use-redux';
+import { useAppDispatch, useAppSelector, type RootState } from '../../hooks/use-redux';
 import { useAuth } from '../../hooks/use-auth';
 import { fetchReviewsAction, fetchOfferByIdAction, toggleFavoriteAction, fetchNearbyOffersAction } from '../../store/api-actions';
 
@@ -24,21 +24,34 @@ const OfferPage: FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const offers = useAppSelector(selectOffers);
-  const favoriteOffers = useAppSelector(selectFavoriteOffers);
-  const { isAuthorized, user } = useAuth();
+  const { isAuthorized } = useAuth();
   const [isOfferLoading, setIsOfferLoading] = useState(true);
-  const currentOffer = useMemo(() => offers.find((offer) => offer.id === id), [offers, id]);
-  const nearbyOffersFromStore = useAppSelector((state) => selectNearbyOffers(state, id));
+  
+  const selectCurrentOffer = useMemo(
+    () => (state: RootState) => selectOfferById(state, id),
+    [id]
+  );
+  const currentOffer = useAppSelector(selectCurrentOffer);
+  
+  const selectNearby = useMemo(
+    () => (state: RootState) => selectNearbyOffers(state, id),
+    [id]
+  );
+  const nearbyOffersFromStore = useAppSelector(selectNearby);
+  
   const nearbyOffers = useMemo(() => nearbyOffersFromStore.slice(0, OFFER.NEARBY_COUNT), [nearbyOffersFromStore]);
   const mapOffers = useMemo(() => currentOffer ? [currentOffer, ...nearbyOffers] : nearbyOffers, [currentOffer, nearbyOffers]);
-  const reviews = useAppSelector((state) => {
-    if (!id) {
-      return [];
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return selectReviewsByOfferId(state, id);
-  });
+  
+  const selectReviews = useMemo(
+    () => (state: RootState) => {
+      if (!id) {
+        return [];
+      }
+      return selectReviewsByOfferId(state, id);
+    },
+    [id]
+  );
+  const reviews = useAppSelector(selectReviews);
 
   useEffect(() => {
     if (!id) {
@@ -80,7 +93,7 @@ const OfferPage: FC = () => {
   if (isOfferLoading) {
     return (
       <div className="page">
-        <Header user={user || undefined} />
+        <Header />
         <main className="page__main">
           <div className="container">
             <p>Loading...</p>
@@ -96,13 +109,7 @@ const OfferPage: FC = () => {
 
   return (
     <div className="page">
-      <Header
-        user={user ? {
-          email: user.email,
-          avatarUrl: user.avatarUrl,
-          favoriteCount: favoriteOffers.length,
-        } : undefined}
-      />
+      <Header />
 
       <main className="page__main page__main--offer">
         <section className="offer">
