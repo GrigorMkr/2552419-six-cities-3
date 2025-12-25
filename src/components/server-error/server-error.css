@@ -1,0 +1,27 @@
+.server-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+}
+
+.server-error__content {
+  text-align: center;
+  max-width: 500px;
+}
+
+.server-error__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ff6b6b;
+  margin: 0 0 1rem 0;
+}
+
+.server-error__message {
+  font-size: 1.125rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+

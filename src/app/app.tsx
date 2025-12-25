@@ -8,25 +8,32 @@ import NotFoundPage from '../pages/not-found-page/not-found-page';
 import PrivateRoute from '../components/private-route/private-route';
 import Spinner from '../components/spinner/spinner';
 import { AppRoute } from '../constants';
-import { fetchOffersAction } from '../store/api-actions';
-import { useAppDispatch, useAppSelector } from '../store';
-import { selectIsLoading } from '../store/data-slice';
+import { fetchOffersAction, checkAuthAction } from '../store/api-actions';
+import { useAppDispatch, useAppSelector } from '../hooks/use-redux';
+import { selectIsLoading, selectServerError } from '../store/data-slice';
+import { selectAuthorizationStatus, AuthorizationStatus } from '../store/auth-slice';
+import ServerError from '../components/server-error/server-error';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment
   const isLoading = useAppSelector(selectIsLoading);
-  const isAuthorized = false;
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const serverError = useAppSelector(selectServerError);
 
   useEffect(() => {
+    dispatch(checkAuthAction());
     dispatch(fetchOffersAction());
   }, [dispatch]);
 
   const baseUrl = import.meta.env.BASE_URL || '';
   const basename = baseUrl.replace(/\/$/, '');
 
-  if (isLoading) {
+  if (isLoading || authorizationStatus === AuthorizationStatus.Unknown) {
     return <Spinner />;
+  }
+
+  if (serverError) {
+    return <ServerError />;
   }
 
   return (
@@ -38,7 +45,7 @@ const App: FC = () => {
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute isAuthorized={isAuthorized}>
+            <PrivateRoute>
               <FavoritesPage />
             </PrivateRoute>
           }

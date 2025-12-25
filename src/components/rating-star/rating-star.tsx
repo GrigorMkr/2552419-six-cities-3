@@ -10,9 +10,10 @@ type RatingStarProps = {
   title: string;
   checked: boolean;
   onChange: (evt: ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
 }
 
-const RatingStar: FC<RatingStarProps> = ({ value, title, checked, onChange }) => {
+const RatingStar: FC<RatingStarProps> = ({ value, title, checked, onChange, disabled = false }) => {
   const id = `${value}-stars`;
 
   return (
@@ -25,6 +26,7 @@ const RatingStar: FC<RatingStarProps> = ({ value, title, checked, onChange }) =>
         type="radio"
         checked={checked}
         onChange={onChange}
+        disabled={disabled}
       />
       <label htmlFor={id} className="reviews__rating-label form__rating-label" title={title}>
         <svg className="form__star-image" width={STAR_ICON.WIDTH} height={STAR_ICON.HEIGHT}>

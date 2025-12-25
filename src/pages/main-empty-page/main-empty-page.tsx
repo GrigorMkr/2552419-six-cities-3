@@ -1,9 +1,14 @@
 import { FC, useMemo } from 'react';
 import Header from '../../components/header/header';
 import LocationsList from '../../components/locations-list/locations-list';
-import { FAVORITE_COUNT, CITIES, CITY_NAME, MOCK_EMAIL } from '../../constants';
+import { CITIES, CITY_NAME } from '../../constants';
+import { selectFavoriteOffers } from '../../store/data-slice';
+import { useAppSelector } from '../../hooks/use-redux';
+import { useAuth } from '../../hooks/use-auth';
 
 const MainEmptyPage: FC = () => {
+  const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const { user } = useAuth();
   const activeCity = useMemo(() => CITIES.find((city) => city.name === CITY_NAME.EMPTY_PAGE_ACTIVE), []);
 
   const citiesWithActive = useMemo(() => CITIES.map((city) => ({
@@ -14,10 +19,11 @@ const MainEmptyPage: FC = () => {
   return (
     <div className="page page--gray page--main">
       <Header
-        user={{
-          email: MOCK_EMAIL,
-          favoriteCount: FAVORITE_COUNT.DEFAULT,
-        }}
+        user={user ? {
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+          favoriteCount: favoriteOffers.length,
+        } : undefined}
       />
 
       <main className="page__main page__main--index page__main--index-empty">
