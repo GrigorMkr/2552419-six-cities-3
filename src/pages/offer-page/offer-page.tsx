@@ -1,5 +1,5 @@
-import { FC, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { FC, useMemo, useEffect, useCallback, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/header/header';
 import OfferGallery from '../../components/offer-gallery/offer-gallery';
 import PremiumMark from '../../components/premium-mark/premium-mark';
@@ -10,71 +10,136 @@ import Price from '../../components/price/price';
 import OfferInside from '../../components/offer-inside/offer-inside';
 import OfferHost from '../../components/offer-host/offer-host';
 import Reviews from '../../components/reviews/reviews';
-import ReviewForm from '../../components/review-form/review-form';
 import Map from '../../components/map/map';
 import PlaceCard from '../../components/place-card/place-card';
+import Spinner from '../../components/spinner/spinner';
 import { PlaceCardVariant } from '../../types/place-card-variant';
-import { MOCK_REVIEWS } from '../../mocks/reviews';
-import { OFFER, FAVORITE_COUNT, MOCK_EMAIL, GALLERY_IMAGES, INSIDE_ITEMS } from '../../constants';
-import { selectOffers } from '../../store/data-slice';
-import { useAppSelector } from '../../store';
+import { OFFER, AppRoute } from '../../constants';
+import { selectNearbyOffers, selectOfferById } from '../../store/data-slice';
+import { selectReviewsByOfferId } from '../../store/reviews-slice';
+import { useAppDispatch, useAppSelector, type RootState } from '../../hooks/use-redux';
+import { useAuth } from '../../hooks/use-auth';
+import { fetchReviewsAction, fetchOfferByIdAction, toggleFavoriteAction, fetchNearbyOffersAction } from '../../store/api-actions';
 
 const OfferPage: FC = () => {
   const { id } = useParams();
-  const offers = useAppSelector(selectOffers);
-  const currentOffer = useMemo(() => offers.find((offer) => offer.id === id), [offers, id]);
-  const nearbyOffers = useMemo(() => offers.filter((offer) => offer.id !== id).slice(0, OFFER.NEARBY_COUNT), [offers, id]);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { isAuthorized } = useAuth();
+  const [isOfferLoading, setIsOfferLoading] = useState(true);
+
+  const selectCurrentOffer = useMemo(
+    () => (state: RootState) => selectOfferById(state, id),
+    [id]
+  );
+  const currentOffer = useAppSelector(selectCurrentOffer);
+
+  const selectNearby = useMemo(
+    () => (state: RootState) => selectNearbyOffers(state, id),
+    [id]
+  );
+  const nearbyOffersFromStore = useAppSelector(selectNearby);
+
+  const nearbyOffers = useMemo(() => nearbyOffersFromStore.slice(0, OFFER.NEARBY_COUNT), [nearbyOffersFromStore]);
   const mapOffers = useMemo(() => currentOffer ? [currentOffer, ...nearbyOffers] : nearbyOffers, [currentOffer, nearbyOffers]);
 
+  const selectReviews = useMemo(
+    () => (state: RootState) => {
+      if (!id) {
+        return [];
+      }
+      return selectReviewsByOfferId(state, id);
+    },
+    [id]
+  );
+  const reviews = useAppSelector(selectReviews);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    setIsOfferLoading(true);
+
+    dispatch(fetchOfferByIdAction(id))
+      .then((result) => {
+        if (fetchOfferByIdAction.rejected.match(result) && result.payload === 'NOT_FOUND') {
+          navigate('/non-existent-route-for-404', { replace: true });
+        } else {
+          dispatch(fetchNearbyOffersAction(id));
+          dispatch(fetchReviewsAction(id));
+        }
+      })
+      .finally(() => {
+        setIsOfferLoading(false);
+      });
+  }, [dispatch, id, navigate]);
+
+  const handleBookmarkClick = useCallback(() => {
+    if (!isAuthorized) {
+      navigate(AppRoute.Login);
+      return;
+    }
+    if (currentOffer && id) {
+      dispatch(toggleFavoriteAction({
+        offerId: id,
+        isFavorite: !currentOffer.isFavorite,
+      }));
+    }
+  }, [isAuthorized, navigate, dispatch, currentOffer, id]);
+
+  if (isOfferLoading) {
+    return <Spinner />;
+  }
+
   if (!currentOffer) {
-    return (
-      <div className="page">
-        <Header />
-        <main className="page__main">
-          <div className="container">
-            <p>Offer not found</p>
-          </div>
-        </main>
-      </div>
-    );
+    return null;
   }
 
   return (
     <div className="page">
-      <Header
-        user={{
-          email: MOCK_EMAIL,
-          favoriteCount: FAVORITE_COUNT.DEFAULT,
-        }}
-      />
+      <Header />
 
       <main className="page__main page__main--offer">
         <section className="offer">
-          <OfferGallery images={GALLERY_IMAGES} />
+          <OfferGallery
+            images={currentOffer.images || (currentOffer.previewImage ? [currentOffer.previewImage] : [])}
+          />
           <div className="offer__container container">
             <div className="offer__wrapper">
-              <PremiumMark variant="offer" />
+              {currentOffer.isPremium && <PremiumMark variant="offer" />}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">
                   {currentOffer.title}
                 </h1>
-                <BookmarkButton size="large" isActive={currentOffer.isFavorite} />
+                <BookmarkButton size="large" isActive={currentOffer.isFavorite} onClick={handleBookmarkClick} />
               </div>
               <Rating rating={currentOffer.rating} className="offer__rating" showValue />
-              <OfferFeatures type={currentOffer.type} bedrooms={OFFER.DEFAULT_BEDROOMS_COUNT} maxAdults={OFFER.DEFAULT_MAX_ADULTS_COUNT} />
+              {currentOffer.bedrooms !== undefined && currentOffer.maxAdults !== undefined && (
+                <OfferFeatures type={currentOffer.type} bedrooms={currentOffer.bedrooms} maxAdults={currentOffer.maxAdults} />
+              )}
               <Price value={currentOffer.price} variant="offer" />
-              <OfferInside items={INSIDE_ITEMS} />
-              <OfferHost
-                name="Angelina"
-                avatarUrl="img/avatar-angelina.jpg"
-                isPro
-                description={[
-                  'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-                  'An independent House, strategically located between Rembrand Square and National Opera, but where the bustle of the city comes to rest in this alley flowery and colorful.',
-                ]}
-              />
-              <Reviews reviews={MOCK_REVIEWS} />
-              <ReviewForm />
+              {currentOffer.goods && (
+                currentOffer.goods.length > 0 && <OfferInside items={currentOffer.goods} />
+              )}
+              {currentOffer.description && (
+                <div className="offer__description">
+                  {currentOffer.description.split('\n').map((paragraph) => (
+                    <p key={`${paragraph.slice(0, 30)}-${paragraph.length}`} className="offer__text">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              )}
+              {currentOffer.host && (
+                <OfferHost
+                  name={currentOffer.host.name}
+                  avatarUrl={currentOffer.host.avatarUrl}
+                  isPro={currentOffer.host.isPro}
+                  description={currentOffer.description ? currentOffer.description.split('\n') : []}
+                />
+              )}
+              <Reviews reviews={reviews} showForm={isAuthorized} offerId={currentOffer.id} />
             </div>
           </div>
           <Map offers={mapOffers} selectedOfferId={currentOffer?.id} className="offer__map" />

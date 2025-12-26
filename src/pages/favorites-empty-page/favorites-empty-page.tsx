@@ -1,16 +1,10 @@
 import { FC } from 'react';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
-import { FAVORITE_COUNT, MOCK_EMAIL } from '../../constants';
 
 const FavoritesEmptyPage: FC = () => (
   <div className="page page--favorites-empty">
-    <Header
-      user={{
-        email: MOCK_EMAIL,
-        favoriteCount: FAVORITE_COUNT.EMPTY,
-      }}
-    />
+    <Header />
 
     <main className="page__main page__main--favorites page__main--favorites-empty">
       <div className="page__favorites-container container">

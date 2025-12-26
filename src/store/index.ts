@@ -1,36 +1,28 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
-import { bindActionCreators } from '@reduxjs/toolkit';
 import dataReducer from './data-slice';
+import authReducer from './auth-slice';
+import reviewsReducer from './reviews-slice';
 import type { DataState } from './data-slice';
 import { createAPI } from '../api/api';
 
 const api = createAPI();
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     data: dataReducer,
+    auth: authReducer,
+    reviews: reviewsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: {
         extraArgument: api,
       },
+      serializableCheck: {
+        warnAfter: 128,
+      },
     }),
 });
 
-type RootState = ReturnType<typeof store.getState>;
-type AppDispatch = typeof store.dispatch;
-
-const useAppDispatch = () => useDispatch<AppDispatch>();
-const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-
-function useActionCreators<AC extends Record<string, (...args: never[]) => unknown>>(actions: AC) {
-  const dispatch = useAppDispatch();
-  return bindActionCreators(actions, dispatch);
-}
-
-export { store, useAppDispatch, useAppSelector, useActionCreators };
-export type { RootState, AppDispatch };
 export type { DataState as State };
 

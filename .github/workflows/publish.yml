@@ -22,9 +22,19 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
 
       - name: Get PR number
+        id: get-pr
         run: |
-          echo "PR=$(cat env | grep "prev.event.number" | awk -F '=' '{print $2}')" >> $GITHUB_ENV
-          echo "BUILD_URL=$(echo ${{ github.repository }} | sed -r 's/\//\.github\.io\//g')" >> $GITHUB_ENV
+          if [ -f "env" ]; then
+            PR_NUMBER=$(cat env | grep "prev.event.number" | awk -F '=' '{print $2}' || echo "")
+          else
+            PR_NUMBER=""
+          fi
+          if [ -z "$PR_NUMBER" ]; then
+            PR_NUMBER="unknown"
+          fi
+          BUILD_URL_VALUE=$(echo ${{ github.repository }} | sed -r 's/\//\.github\.io\//g')
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "build_url=$BUILD_URL_VALUE" >> $GITHUB_OUTPUT
 
       - name: Create 404.html for PR deploy
         run: |
@@ -36,18 +46,20 @@ jobs:
           touch dist/.nojekyll
 
       - name: Deploy build to Github Pages
+        if: steps.get-pr.outputs.pr_number != 'unknown' && steps.get-pr.outputs.pr_number != ''
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
           clean: true
           git-config-name: "keksobot"
           git-config-email: "github+keksobot@htmlacademy.ru"
-          target-folder: ${{ env.PR }}
-          commit-message: "✔️ Сборка #${{ env.PR }}"
+          target-folder: ${{ steps.get-pr.outputs.pr_number }}
+          commit-message: "✔️ Сборка #${{ steps.get-pr.outputs.pr_number }}"
 
       - name: Comment PR
+        if: steps.get-pr.outputs.pr_number != 'unknown' && steps.get-pr.outputs.pr_number != ''
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Ваш пулреквест опубликован. Посмотреть можно [здесь](https://${{ env.BUILD_URL }}/${{ env.PR }}/)
-          pr_number: ${{ env.PR }}
+            Ваш пулреквест опубликован. Посмотреть можно [здесь](https://${{ steps.get-pr.outputs.build_url }}/${{ steps.get-pr.outputs.pr_number }}/)
+          pr_number: ${{ steps.get-pr.outputs.pr_number }}

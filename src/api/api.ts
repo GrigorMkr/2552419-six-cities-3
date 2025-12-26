@@ -1,13 +1,32 @@
-import axios from 'axios';
-
-const REQUEST_TIMEOUT = 5000;
-const BASE_URL = 'https://15.design.htmlacademy.pro/six-cities';
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { getToken, dropToken } from './token';
+import { API, HTTP_STATUS } from '../constants';
 
 export const createAPI = () => {
   const api = axios.create({
-    baseURL: BASE_URL,
-    timeout: REQUEST_TIMEOUT,
+    baseURL: API.BASE_URL,
+    timeout: API.REQUEST_TIMEOUT,
   });
+
+  api.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+      const token = getToken();
+      if (token && config.headers) {
+        config.headers[API.TOKEN_HEADER] = token;
+      }
+      return config;
+    }
+  );
+
+  api.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      if (error.response?.status === HTTP_STATUS.UNAUTHORIZED) {
+        dropToken();
+      }
+      return Promise.reject(error);
+    }
+  );
 
   return api;
 };

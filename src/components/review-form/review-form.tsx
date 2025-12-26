@@ -1,16 +1,25 @@
 import { useState, FormEvent, ChangeEvent, useCallback, FC } from 'react';
-import { MIN_COMMENT_LENGTH } from '../../constants';
+import { MIN_COMMENT_LENGTH, MAX_COMMENT_LENGTH, RATING } from '../../constants';
 import RatingStar from '../rating-star/rating-star';
+import { useAppDispatch } from '../../hooks/use-redux';
+import { submitReviewAction } from '../../store/api-actions';
+import { useAuth } from '../../hooks/use-auth';
 
 const RATING_OPTIONS = [
-  { value: 5, title: 'perfect' },
-  { value: 4, title: 'good' },
-  { value: 3, title: 'not bad' },
-  { value: 2, title: 'badly' },
-  { value: 1, title: 'terribly' },
+  { value: RATING.MAX, title: 'perfect' },
+  { value: RATING.VALUE_4, title: 'good' },
+  { value: RATING.VALUE_3, title: 'not bad' },
+  { value: RATING.VALUE_2, title: 'badly' },
+  { value: RATING.MIN, title: 'terribly' },
 ] as const;
 
-const ReviewForm: FC = () => {
+type ReviewFormProps = {
+  offerId: string;
+}
+
+const ReviewForm: FC<ReviewFormProps> = ({ offerId }) => {
+  const dispatch = useAppDispatch();
+  const { isAuthorized } = useAuth();
   const [rating, setRating] = useState<string>('');
   const [comment, setComment] = useState<string>('');
 
@@ -24,12 +33,28 @@ const ReviewForm: FC = () => {
 
   const handleSubmit = useCallback((evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-  }, []);
+    dispatch(submitReviewAction({
+      offerId,
+      reviewData: {
+        rating: Number(rating),
+        comment: comment.trim(),
+      },
+    }));
+  }, [dispatch, offerId, rating, comment]);
 
-  const isSubmitDisabled = !rating || comment.length < MIN_COMMENT_LENGTH;
+  const isSubmitDisabled = !rating || comment.trim().length < MIN_COMMENT_LENGTH || comment.trim().length > MAX_COMMENT_LENGTH;
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
-    <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmit}>
+    <form
+      className="reviews__form form"
+      action="#"
+      method="post"
+      onSubmit={handleSubmit}
+    >
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
         {RATING_OPTIONS.map((option) => (
@@ -42,12 +67,22 @@ const ReviewForm: FC = () => {
           />
         ))}
       </div>
-      <textarea className="reviews__textarea form__textarea" id="review" name="review" placeholder="Tell how was your stay, what you like and what can be improved" value={comment} onChange={handleCommentChange}></textarea>
+      <textarea
+        className="reviews__textarea form__textarea"
+        id="review"
+        name="review"
+        placeholder="Tell how was your stay, what you like and what can be improved"
+        value={comment}
+        onChange={handleCommentChange}
+        maxLength={MAX_COMMENT_LENGTH}
+      />
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
-          To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">{MIN_COMMENT_LENGTH} characters</b>.
+          To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">{MIN_COMMENT_LENGTH} characters</b> and no more than <b className="reviews__text-amount">{MAX_COMMENT_LENGTH} characters</b>.
         </p>
-        <button className="reviews__submit form__submit button" type="submit" disabled={isSubmitDisabled}>Submit</button>
+        <button className="reviews__submit form__submit button" type="submit" disabled={isSubmitDisabled}>
+          Submit
+        </button>
       </div>
     </form>
   );

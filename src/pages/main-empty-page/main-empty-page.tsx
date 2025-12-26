@@ -1,7 +1,7 @@
 import { FC, useMemo } from 'react';
 import Header from '../../components/header/header';
 import LocationsList from '../../components/locations-list/locations-list';
-import { FAVORITE_COUNT, CITIES, CITY_NAME, MOCK_EMAIL } from '../../constants';
+import { CITIES, CITY_NAME } from '../../constants';
 
 const MainEmptyPage: FC = () => {
   const activeCity = useMemo(() => CITIES.find((city) => city.name === CITY_NAME.EMPTY_PAGE_ACTIVE), []);
@@ -13,12 +13,7 @@ const MainEmptyPage: FC = () => {
 
   return (
     <div className="page page--gray page--main">
-      <Header
-        user={{
-          email: MOCK_EMAIL,
-          favoriteCount: FAVORITE_COUNT.DEFAULT,
-        }}
-      />
+      <Header />
 
       <main className="page__main page__main--index page__main--index-empty">
         <h1 className="visually-hidden">Cities</h1>

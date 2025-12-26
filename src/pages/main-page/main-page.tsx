@@ -3,9 +3,9 @@ import Header from '../../components/header/header';
 import LocationsList from '../../components/locations-list/locations-list';
 import PlacesList from '../../components/places-list/places-list';
 import Map from '../../components/map/map';
-import { FAVORITE_COUNT, CITIES, DEFAULT_SORT_OPTIONS, MOCK_EMAIL, SortType } from '../../constants';
+import { CITIES, DEFAULT_SORT_OPTIONS, SortType } from '../../constants';
 import { selectCity, selectOffers } from '../../store/data-slice';
-import { useAppSelector } from '../../store';
+import { useAppSelector } from '../../hooks/use-redux';
 import { useBoolean } from '../../hooks/use-boolean';
 
 const MainPage: FC = () => {
@@ -61,14 +61,32 @@ const MainPage: FC = () => {
     return option?.name || 'Popular';
   }, []);
 
+  if (sortedOffers.length === 0) {
+    return (
+      <div className="page page--gray page--main">
+        <Header />
+        <main className="page__main page__main--index page__main--index-empty">
+          <h1 className="visually-hidden">Cities</h1>
+          <LocationsList cities={citiesWithActive} activeCity={city} />
+          <div className="cities">
+            <div className="cities__places-container cities__places-container--empty container">
+              <section className="cities__no-places">
+                <div className="cities__status-wrapper tabs__content">
+                  <b className="cities__status">No places to stay available</b>
+                  <p className="cities__status-description">We could not find any property available at the moment in {city.name}</p>
+                </div>
+              </section>
+              <div className="cities__right-section"></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="page page--gray page--main">
-      <Header
-        user={{
-          email: MOCK_EMAIL,
-          favoriteCount: FAVORITE_COUNT.DEFAULT,
-        }}
-      />
+      <Header />
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>

@@ -1,7 +1,9 @@
 import { FC, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { City } from '../../types/offer';
 import { changeCity } from '../../store/data-slice';
-import { useActionCreators } from '../../store';
+import { useAppDispatch } from '../../hooks/use-redux';
+import { AppRoute } from '../../constants';
 
 type LocationsListProps = {
   cities: City[];
@@ -11,36 +13,36 @@ type LocationsListProps = {
 type LocationsItemProps = {
   city: City;
   activeCity?: City;
-  onCityClick: (city: City, evt: React.MouseEvent<HTMLAnchorElement>) => void;
+  onCityClick: (city: City) => void;
 }
 
 const ListItem: FC<LocationsItemProps> = ({city, activeCity, onCityClick}) => {
   const className = `locations__item-link tabs__item ${city.isActive || activeCity?.name === city.name ? 'tabs__item--active' : ''}`;
 
   const handleClick = useCallback((evt: React.MouseEvent<HTMLAnchorElement>) => {
-    onCityClick(city, evt);
+    evt.preventDefault();
+    onCityClick(city);
   }, [onCityClick, city]);
 
   return (
     <li className="locations__item">
-      <a
+      <Link
         className={className}
-        href="#"
+        to={AppRoute.Main}
         onClick={handleClick}
       >
         <span>{city.name}</span>
-      </a>
+      </Link>
     </li>
   );
 };
 
 const LocationsList: FC<LocationsListProps> = ({cities, activeCity}) => {
-  const actions = useActionCreators({ changeCity });
+  const dispatch = useAppDispatch();
 
-  const handleCityClick = useCallback((city: City, evt: React.MouseEvent<HTMLAnchorElement>) => {
-    evt.preventDefault();
-    actions.changeCity(city);
-  }, [actions]);
+  const handleCityClick = useCallback((city: City) => {
+    dispatch(changeCity({ name: city.name }));
+  }, [dispatch]);
 
   return (
     <div className="tabs">
