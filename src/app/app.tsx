@@ -52,6 +52,7 @@ const App: FC = () => {
           }
         />
         <Route path={AppRoute.Offer} element={<OfferPage />} />
+        <Route path={AppRoute.NotFound as string} element={<NotFoundPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
