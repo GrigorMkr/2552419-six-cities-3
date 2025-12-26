@@ -4,15 +4,13 @@ import LocationsList from '../../components/locations-list/locations-list';
 import PlacesList from '../../components/places-list/places-list';
 import Map from '../../components/map/map';
 import { CITIES, DEFAULT_SORT_OPTIONS, SortType } from '../../constants';
-import { selectCity, selectOffers } from '../../store/data-slice';
+import { selectCity, selectOffersByCity } from '../../store/data-slice';
 import { useAppSelector } from '../../hooks/use-redux';
 import { useBoolean } from '../../hooks/use-boolean';
 
 const MainPage: FC = () => {
   const city = useAppSelector(selectCity);
-  const allOffers = useAppSelector(selectOffers);
-
-  const filteredOffers = useMemo(() => allOffers.filter((offer) => offer.city.name === city.name), [allOffers, city]);
+  const filteredOffers = useAppSelector(selectOffersByCity);
 
   const citiesWithActive = useMemo(() => CITIES.map((cityItem) => ({
     ...cityItem,

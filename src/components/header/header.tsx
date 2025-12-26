@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../constants';
 import { getImageUrl } from '../../utils/image-url';
@@ -11,7 +11,7 @@ const LOGO = {
   HEIGHT: 41,
 } as const;
 
-const Header: FC = () => {
+const Header: FC = memo(() => {
   const { isAuthorized } = useAuth();
   const navList = isAuthorized ? <AuthorizedNavList /> : <UnauthorizedNavList />;
 
@@ -33,7 +33,9 @@ const Header: FC = () => {
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = 'Header';
 
 export default Header;
 
