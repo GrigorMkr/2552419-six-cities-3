@@ -64,7 +64,7 @@ const OfferPage: FC = () => {
     dispatch(fetchOfferByIdAction(id))
       .then((result) => {
         if (fetchOfferByIdAction.rejected.match(result) && result.payload === 'NOT_FOUND') {
-          navigate('/non-existent-route-for-404', { replace: true });
+          navigate('/404', { replace: true });
         } else {
           dispatch(fetchNearbyOffersAction(id));
           dispatch(fetchReviewsAction(id));

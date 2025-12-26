@@ -1,9 +1,10 @@
 import { useState, FormEvent, ChangeEvent, useCallback, FC } from 'react';
 import { MIN_COMMENT_LENGTH, MAX_COMMENT_LENGTH, RATING } from '../../constants';
 import RatingStar from '../rating-star/rating-star';
-import { useAppDispatch } from '../../hooks/use-redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/use-redux';
 import { submitReviewAction } from '../../store/api-actions';
 import { useAuth } from '../../hooks/use-auth';
+import { selectReviewsLoading } from '../../store/reviews-slice';
 
 const RATING_OPTIONS = [
   { value: RATING.MAX, title: 'perfect' },
@@ -20,6 +21,7 @@ type ReviewFormProps = {
 const ReviewForm: FC<ReviewFormProps> = ({ offerId }) => {
   const dispatch = useAppDispatch();
   const { isAuthorized } = useAuth();
+  const reviewsLoading = useAppSelector(selectReviewsLoading);
   const [rating, setRating] = useState<string>('');
   const [comment, setComment] = useState<string>('');
 
@@ -39,10 +41,14 @@ const ReviewForm: FC<ReviewFormProps> = ({ offerId }) => {
         rating: Number(rating),
         comment: comment.trim(),
       },
-    }));
+    })).unwrap().then(() => {
+      setRating('');
+      setComment('');
+    }).catch(() => {
+    });
   }, [dispatch, offerId, rating, comment]);
 
-  const isSubmitDisabled = !rating || comment.trim().length < MIN_COMMENT_LENGTH || comment.trim().length > MAX_COMMENT_LENGTH;
+  const isSubmitDisabled = reviewsLoading || !rating || comment.trim().length < MIN_COMMENT_LENGTH || comment.trim().length > MAX_COMMENT_LENGTH;
 
   if (!isAuthorized) {
     return null;
@@ -64,6 +70,7 @@ const ReviewForm: FC<ReviewFormProps> = ({ offerId }) => {
             title={option.title}
             checked={rating === String(option.value)}
             onChange={handleRatingChange}
+            disabled={reviewsLoading}
           />
         ))}
       </div>
@@ -75,6 +82,7 @@ const ReviewForm: FC<ReviewFormProps> = ({ offerId }) => {
         value={comment}
         onChange={handleCommentChange}
         maxLength={MAX_COMMENT_LENGTH}
+        disabled={reviewsLoading}
       />
       <div className="reviews__button-wrapper">
         <p className="reviews__help">

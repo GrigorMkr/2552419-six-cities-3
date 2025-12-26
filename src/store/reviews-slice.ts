@@ -59,3 +59,6 @@ export const selectReviewsByOfferId = createSelector(
   (reviews, offerId): Review[] => reviews[offerId] || EMPTY_REVIEWS_ARRAY
 );
 
+export const selectReviewsLoading = (state: RootState) => state.reviews.reviewsLoading;
+export const selectReviewsError = (state: RootState) => state.reviews.reviewsError;
+
